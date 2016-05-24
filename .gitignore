@@ -1,0 +1,6 @@
+build/
+api-docs/
+bin/
+.kdev4
+*.kdev4
+
