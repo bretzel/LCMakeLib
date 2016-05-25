@@ -1,0 +1,27 @@
+cmake_minimum_required(VERSION %f)
+project(%{ProjectName})
+
+include (setup_env.cmake)
+
+set (CMAKE_INSTALL_PREFIX ${HROOT}/%{ProjectName})
+
+message("Install Prefix (overwrite):" ${CMAKE_INSTALL_PREFIX})
+
+find_package(Qt4 REQUIRED)
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR} %{_INCLUDES_LIST})
+
+FILE(GLOB FormsUI ${CMAKE_CURRENT_SOURCE_DIR}/Resources/*.ui)
+
+message("UI: " ${FormsUI})
+QT4_WRAP_UI(FromsUI ${FormsUI})
+qt4_automoc(${IgnitProject_SRCS})
+add_executable(IgnitProject ${IgnitProject_SRCS} ${FormsUI})
+target_link_libraries(IgnitProject ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
+
+
+
+
+install(TARGETS IgnitProject RUNTIME DESTINATION Bin)
+#install(FILES ${FormsUI} DESTINATION Resources)
+add_subdirectory(Resources)

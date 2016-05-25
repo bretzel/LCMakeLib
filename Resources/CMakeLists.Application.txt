@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION %CMakeVersion)
+project(%ProjectName)
+
+include (setup_env.cmake)
+
+set (CMAKE_INSTALL_PREFIX ${HROOT}/%ProjectName)
+
+message("Install Prefix (overwrite):" ${CMAKE_INSTALL_PREFIX})
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR} %_INCLUDES_LIST)
+
+
+
+
+
+
+
+
+
+
+
