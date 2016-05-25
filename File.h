@@ -21,13 +21,14 @@
 #pragma once
 
 #include <LString++.h>
+#include <LexMessage.h>
 
 
 #include <utility>
 #include <map>
 #include <fstream>
 #include <errno.h>
-
+#include <LexMessage.h>
 
 namespace LCMake {
 
@@ -51,12 +52,21 @@ public:
     static List sFiles;
     Dictionary  mVariables;
 
-    File(const LString aID, const LString& aCMakeTemplateFile);
+    File(const LString aID, const LString& aCMakeTemplateFile, const LString& aCMakeOutputFile);
 
     Variable& operator[](const LString& VariableID);
     static int32_t PushGenerator(const LString& ID, File* pFile);
     static File* QueryGenerator(const LString& ID);
 
+    int32_t   OpenInput();
+    int32_t   CloseInput();
+    int32_t   OpenOutput();
+    int32_t   CloseOutput();
+
+    int32_t   Generate();
+
+    int32_t BeginParseVariable();
+    virtual int32_t EndParseVariable(File::Variable& Var) = 0;
 };
 
 
@@ -67,11 +77,30 @@ public:
 
     typedef int32_t (Generator::*GeneratorFN)(File::Variable& );
 
+    typedef std::map<LString, typename CMakeFile<Generator>::GeneratorFN> VariableParser;
+
+    // (this->*FN)(V);
 
     CMakeFile(): File(){}
     CMakeFile(const LString aID, const LString& aCMakeTemplateFile, const LString& aCMakeOutputFile): File(aID, aCMakeTemplateFile,aCMakeOutputFile){
 
     }
+
+    virtual ~CMakeFile(){
+        mParsers.clear();
+    }
+
+    //virtual int32_t EndParseVariable() = 0;
+
+protected:
+    VariableParser mParsers;
+    GeneratorFN operator()(const LString& aID){
+        GeneratorFN Fn;
+        if(mParsers.find(aID) == mParsers.end())
+            throw LexerMsg::PushError(ErrCode::ObjectNotFound) + LString(" No Generator-handler for variable %s").Arg(aID);
+        return mParsers[aID];
+    }
+
 };
 
 

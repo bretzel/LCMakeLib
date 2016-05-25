@@ -19,10 +19,13 @@ message("MODULES:" ${CMAKE_MODULE_PATH})
 FILE(GLOB LCMAKE_SRC
 
     File.c++
+    Target.c++
+    Master.c++
 )
 
 FILE(GLOB LCMAKE_HDR
-
+    Target.h
+    Master.h
     File.h
 )
 
