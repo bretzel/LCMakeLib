@@ -47,11 +47,12 @@ protected:
 public:
     
     struct Variable{
+        LString       mID;
         LString       mLabel;
         LString::List mValue;
         
         Variable(){}
-        Variable(const LString& aID, const LString& aValue);
+        Variable(const LString& aID, const LString& aLabel,const LString& aValue);
         Variable(const Variable& V);
         ~Variable();
         
@@ -62,7 +63,10 @@ public:
         Variable& operator = (const LString::List& Data);
         Variable& operator << ( const LString& Data);
         Variable& operator << (const LString::List& Data);
-        
+        Variable& Clear(){
+            mValue.clear();
+            return *this;
+        }
         bool operator == (const Variable& V);
         //- -------------------------------------------------------
         
@@ -80,8 +84,6 @@ public:
 
     static int32_t PushGenerator(const LString& ID, File* pFile);
     static File* QueryGenerator(const LString& ID);
-    static void  Assign(File::Variable& V, const LString& Value);
-    static void  Assign(File::Variable& V, const LString::List& Value);
 
     LString ID() const { return mID; }
     void    SetID(const LString& aID){

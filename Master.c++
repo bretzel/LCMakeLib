@@ -38,14 +38,14 @@ mBasePath(aBasePath)
 
 
     mVariables = {
-        {"CMakeVersion"      ,{"CMakeVersion"      , {""}}},
-        {"ProjectName"       ,{"ProjectName"       , {""}}},
-        {"Author"            ,{"Author"            , {""}}},
-        {"Email"             ,{"Email"             , {""}}},
-        {"Targets"           ,{"Targets List"      , {""}}},
-        {"ModulesDependency" ,{"ModulesDependency" , {""}}},
-        {"MasterName"        ,{"MasterName"        , {""}}},
-        {"InstallTargets"    ,{"InstallTargets"    , {""}}}
+        {"CMakeVersion"      ,{"CMakeVersion"      ,"CMake Minimum Version", {""}}},
+        {"ProjectName"       ,{"ProjectName"       ,"Project Name"       , {""}}},
+        {"Author"            ,{"Author"            ,"Author"            , {""}}},
+        {"Email"             ,{"Email"             ,"Email"             , {""}}},
+        {"Targets"           ,{"Targets"           ,"Targets List"      , {""}}},
+        {"ModulesDependency" ,{"ModulesDependency" ,"Modules Dependency" , {""}}},
+        {"MasterName"        ,{"MasterName"        ,"MasterName"        , {""}}},
+        {"InstallTargets"    ,{"InstallTargets"    ,"InstallTargets"    , {""}}}
     };
 
     mParsers = {
@@ -85,20 +85,27 @@ bool Master::operator==(const Master& other) const
 
 int32_t Master::xInstallTargets(File::Variable& Var)
 {
+    mOutFile << '[' << Var.mID << ": unimplemented]";
     return ErrCode::Implement;
 }
 
 
 int32_t Master::xModulesDependency(File::Variable& Var)
 {
+    mOutFile << "# Modules Dependencies:" << std::endl;
+    if(!Var.mValue.empty()){
+        for(LString& M : Var.mValue)
+            mOutFile << "find_package(" << M << " REQUIRED)" << std::endl;
+    }
     return ErrCode::Implement;
 }
 
 int32_t Master::xValue(File::Variable& Var)
 {
+    lfnl << "Varibale: [" << chgreen << Var.mID << creset << Var.mValue.front() << ": \n" ;
     LString::List& L = Var.mValue;
     if(!L.empty()){
-        mOutFile << L[1];
+        mOutFile << (L[0].empty() ? "[EMPTY]" : L[0]);
         return ErrCode::Ok;
     }
     return ErrCode::NullValue;
@@ -118,11 +125,14 @@ int32_t Master::xTargets(File::Variable& Var)
 
 int32_t Master::EndParseVariable(File::Variable& Var)
 {
-    GeneratorFN G = (*this)(Var.mLabel);
+    GeneratorFN G = (*this)(Var.mID);
+    lfnl << ":\n";
     if(G)
         return (this->*G)(Var);
     ///@todo Check that the variable id is really defined somewhere
-    LexerMsg::PushWarning(ErrCode::Implement) + LString("No Generator implemented for variable: `%s`").Arg(Var.mLabel);
+    mOutFile << '[' << Var.mID << ": undef]";
+    LexerMsg M = LexerMsg::PushWarning(ErrCode::Implement) + LString(" -- No Generator implemented for variable: `%s`").Arg(Var.mID);
+    std::cerr << M.cc() << "\n";
     return ErrCode::Implement;
 }
 

@@ -8,13 +8,15 @@ using namespace LCMake;
 
 int32_t Test_Master()
 {
-    Master M("MyProject", "/home/bretzelus/Applications/CMake.App");
-    File::Variable& V = M["Author"];
-    V =  "Bretzelus-I";
-    lfnl << "Variable :`" << V.mLabel << "` = `" << cyellow << V.mValue[0] << creset << "`\n";
-    File::Variable& Email = M["Email"];
-    Email =  "lussier.serge@gmail.com";
-    lfnl << chblue << "Variable :`" << cwhite << Email.mLabel << "` = `" << chcyan << Email.mValue[0] << creset << "`\n";
+    ///home/bretzelus/Applications/LCMake.App/LCMake.Src
+    Master M("MyProject", "/home/bretzelus/Applications/LCMake.App/LCMake.Src");
+
+    M["CMakeVersion"]   =  "3.0";
+    M["Author"]         =  "Bretzelus-I";
+    M["Email"]          =  "lussier.serge@gmail.com";
+    M["ProjectName"]    =  "CMakeTest-Application";
+    M["MasterName"]     =  "CMake.Test.App";
+    M["ModulesDependency"].Clear()  << "Lus" <<  "L++";
     
     M.OpenInput();
     M.OpenOutput();
@@ -49,6 +51,10 @@ int main (int argc, char **argv)
               << Journal::lf << Journal::white << "end code mode..." << ends;
         
         Test_Master();
+        LexerMsg E;
+        while(LexerMsg::Pop(E)){
+            std::cerr << E.cc() << "\n";
+        }
         Journal::close();
     }
     catch(const char* err){
