@@ -29,6 +29,8 @@ FILE(GLOB LCMAKE_HDR
     File.h
 )
 
+FILE(GLOB LCMAKE_RESOURCES Resources/*)
+message("Resources: " ${LCMAKE_RESOURCES} )
 
 add_library(
     LCMakeLib
@@ -46,3 +48,4 @@ INSTALL(TARGETS LCMake.App RUNTIME DESTINATION Libraries/LCMakeLib/Bin )
 
 INSTALL(FILES ${LCMAKE_HDR} DESTINATION  Libraries/LCMakeLib/Include )
 INSTALL(FILES FindLCMakeLib.cmake DESTINATION  ${CMAKE_MODULE_PATH} )
+INSTALL(FILES ${LCMAKE_RESOURCES} DESTINATION Libraries/LCMakeLib/Resources)

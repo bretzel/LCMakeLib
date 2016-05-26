@@ -51,12 +51,19 @@ public:
 
     static List sFiles;
     Dictionary  mVariables;
-
+    File(){}
     File(const LString aID, const LString& aCMakeTemplateFile, const LString& aCMakeOutputFile);
 
     Variable& operator[](const LString& VariableID);
     static int32_t PushGenerator(const LString& ID, File* pFile);
     static File* QueryGenerator(const LString& ID);
+
+
+
+    LString ID() const { return mID; }
+    void    SetID(const LString& aID){
+        mID = aID;
+    }
 
     int32_t   OpenInput();
     int32_t   CloseInput();

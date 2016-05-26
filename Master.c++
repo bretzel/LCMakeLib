@@ -19,20 +19,93 @@
 
 #include "Master.h"
 
-#define CMAKE_TEMPLATE_FILE "../Resource/CMake.Master.txt" // As long as the working dir is the Bin subdir 
+#define CMAKE_MASTERTEMPLATE_FILE "../Resource/CMake.MasterTemplate.txt" // As long as the working dir is the Bin subdir
 #define CMAKE_OUTPUT_FILENAME   "CMakeLists.txt"
 
 
 namespace LCMake {
 
-Master::Master(const LString aID, const LString& aBasePath):
-mBasePath(aBasePath),
-CMakeFile< LCMake::Master >(aID, CMAKE_TEMPLATE_FILE, aBasePath + '/' + CMAKE_OUTPUT_FILENAME)
+Master::Master(const LString aID, const LString& aBasePath): CMakeFile< LCMake::Master >(aID, CMAKE_MASTERTEMPLATE_FILE, aBasePath + '/' + CMAKE_OUTPUT_FILENAME),
+mBasePath(aBasePath)
 {
+    /*
+     * #   CMakeVersion
+     * #   ModulesDependency
+     * #   MasterName
+     * #   InstallTargets
+     *
+     */
+
+
     mVariables = {
-        {"" , {"", {""}}}
-        
+        {"CMakeVersion"      ,{"CMakeVersion"      , {"3.0"}}},
+        {"ModulesDependency" ,{"ModulesDependency" , {""}}},
+        {"MasterName"        ,{"MasterName"        , {""}}},
+        {"InstallTargets"    ,{"InstallTargets"    , {""}}}
     };
+
+    mParsers = {
+        {"CMakeVersion"       ,&Master::xValue},
+        {"ModulesDependency"  ,&Master::xModulesDependency},
+        {"MasterName"         ,&Master::xValue},
+        {"InstallTargets"     ,&Master::xInstallTargets}
+    };
+
+}
+
+Master::Master(const Master& other)
+{
+
+}
+
+Master::Master()
+{
+
+}
+
+
+Master& Master::operator=(const Master& other)
+{
+    return *this;
+}
+
+
+bool Master::operator==(const Master& other) const
+{
+    return ID() == other.ID();
+}
+
+
+int32_t Master::xInstallTargets(File::Variable& Var)
+{
+    return ErrCode::Implement;
+}
+
+
+int32_t Master::xModulesDependency(File::Variable& Var)
+{
+    return ErrCode::Implement;
+}
+
+int32_t Master::xValue(File::Variable& Var)
+{
+    LString::List& L = Var.second;
+    if(!L.empty()){
+        LString::List::iterator I = L.begin();
+        mOutFile << *I;
+        return ErrCode::Ok;
+    }
+    return ErrCode::NullValue;
+}
+
+Master::~Master()
+{
+    for(auto VI : mVariables){
+        VI.second.second.clear(); // <LString::List>
+        VI.second.first.clear();  // <LString  ( UI Label text storage)>
+    }
+    mVariables.clear();
+    mParsers.clear();
 }
 
 

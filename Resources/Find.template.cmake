@@ -1,35 +1,39 @@
-   # - Find %LibName library and includes
-   # Find the %LibName includes and library
+   # - Find %Name library and includes
+   # Find the %Name includes and library
    # This module defines
-   #  %Include, where to find %IncludeFile
-   #  %Library, the library needed to use %LibFile.
-   #  %Found, If false, do not try to use %Library.
+   #  %'Name'_INCLUDE_DIR, where to find Include File
+   #  %'Name'_LIBRARY, the library needed to use %Name.
+   #  %'Name'_Found, If false, do not try to use %Name.
    #
    # Copyright (c) %YEAR, %Author (%Alias), <%Email>
    #
    # Redistribution and use is allowed according to the terms of the BSD license.
    # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
-if(%Include AND %Library)
-     set(%Found TRUE)
 
-else(%Include AND %Library)
+#Name = Targetname = Templates  
+#NAME ( TargetName converted in UPCASE )
 
-    find_file(%`LibName`_INCLUDE_DIR <Insert filename> ${HROOT}/Libraries/%LibName/include  /usr/include/%LibName/ /usr/local/include/%LibName/)
-    message(STATUS ${%[LibName]_INCLUDE_DIR})
-    find_library(%Library NAMES lib%`LibName`.so PATHS /usr/lib /usr/local/lib)
+if(%'NAME'_INCLUDE_DIR AND %'NAME'_LIBRARY)
+     set(%'NAME'_Found TRUE)
 
-    message(STATUS ${%Library} ${%Include})
+else(%'NAME'_INCLUDE_DIR AND %'NAME'_LIBRARY)
 
-    if(%Include AND %LibName)
-      set(%Found TRUE)
-      message(STATUS "Found %LibName: ${%Include}, ${%LibName},  ${%LibName}")
-    else(%Include AND %Library )
-      set(%Found FALSE)
-      message(FATAL_ERROR "%LibName not found.")
-    endif(%Include AND %Library)
+    find_file(%`NAME`_INCLUDE_DIR %Name.h ${HROOT}/Libraries/%Name/include  /usr/include/%Name/ /usr/local/include/%Name/)
+    message(STATUS ${%'NAME'_INCLUDE_DIR})
+    find_library(%'NAME'_LIBRARY NAMES lib%`Name`.so PATHS ${HROOT}/Libraries /usr/lib /usr/local/lib)
 
-    mark_as_advanced(%Include %Library)
+    message(STATUS ${%'NAME'_INCLUDE_DIR} ${%'NAME'_LIBRARY})
 
-endif(%Include AND %Library)
+    if(%'NAME'_INCLUDE_DIR AND %'NAME'_LIBRARY)
+      set(%'NAME'_Found TRUE)
+      message(STATUS "Found %Name: ${%'NAME'_INCLUDE_DIR}, ${%'NAME'_LIBRARY}")
+    else(%'NAME'_INCLUDE_DIR AND %'NAME'_LIBRARY)
+      set(%'NAME'_Found FALSE)
+      message(FATAL_ERROR "%Name not found.")
+    endif(%'NAME'_INCLUDE_DIR AND %'NAME'_LIBRARY)
+
+    mark_as_advanced(%'NAME'_INCLUDE_DIR %'NAME'_LIBRARY)
+
+endif(%'NAME'_INCLUDE_DIR AND %'NAME'_LIBRARY)
 

@@ -39,6 +39,9 @@ public:
     Master& operator=(const Master& other);
     bool operator==(const Master& other) const;
 
+    int32_t xValue             (File::Variable& Var);    // Single Value
+    int32_t xModulesDependency (File::Variable& Var);    // Specialized Generator
+    int32_t xInstallTargets    (File::Variable& Var);    // Specialized Generator
     
 
 };

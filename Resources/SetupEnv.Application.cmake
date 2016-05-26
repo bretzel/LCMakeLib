@@ -8,7 +8,7 @@ add_definitions( -std=c++14 -Wall)
 add_definitions( -Wno-write-strings )
 
 set (CMAKE_MODULE_PATH ${HROOT}/CMakeModules)
-set (CMAKE_INSTALL_PREFIX ${HROOT}/%ApplicationName)
+set (CMAKE_INSTALL_PREFIX ${HROOT})
 
 add_custom_target(uninstall
     "${CMAKE_COMMAND}" -P "${CMAKE_MODULE_PATH}/cmake_uninstall.cmake"
