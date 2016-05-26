@@ -30,11 +30,12 @@ class Master : public CMakeFile<LCMake::Master>
 
     Target::List    mTargets;
     LString         mBasePath;
+
 public:
 
     Master();
     Master(const Master& other);
-    Master(const LString aID, const LString& aBasePath);
+    Master(const LString& aID, const LString& aBasePath);
     ~Master();
     Master& operator=(const Master& other);
     bool operator==(const Master& other) const;
@@ -42,6 +43,8 @@ public:
     int32_t xValue             (File::Variable& Var);    // Single Value
     int32_t xModulesDependency (File::Variable& Var);    // Specialized Generator
     int32_t xInstallTargets    (File::Variable& Var);    // Specialized Generator
+    int32_t xTargets           (File::Variable& Var);    // Specialized Generator
+
     virtual int32_t EndParseVariable(Variable& Var);
 
 };

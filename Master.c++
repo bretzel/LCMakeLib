@@ -19,13 +19,13 @@
 
 #include "Master.h"
 
-#define CMAKE_MASTERTEMPLATE_FILE "../Resource/CMake.MasterTemplate.txt" // As long as the working dir is the Bin subdir
+#define CMAKE_MASTERTEMPLATE_FILE "../Resources/CMake.MasterTemplate.txt" // As long as the working dir is the Bin subdir
 #define CMAKE_OUTPUT_FILENAME   "CMakeLists.txt"
 
 
 namespace LCMake {
 
-Master::Master(const LString aID, const LString& aBasePath): CMakeFile< LCMake::Master >(aID, CMAKE_MASTERTEMPLATE_FILE, aBasePath + '/' + CMAKE_OUTPUT_FILENAME),
+Master::Master(const LString& aID, const LString& aBasePath): CMakeFile< LCMake::Master >(aID, CMAKE_MASTERTEMPLATE_FILE, aBasePath + '/' + CMAKE_OUTPUT_FILENAME),
 mBasePath(aBasePath)
 {
     /*
@@ -38,7 +38,11 @@ mBasePath(aBasePath)
 
 
     mVariables = {
-        {"CMakeVersion"      ,{"CMakeVersion"      , {"3.0"}}},
+        {"CMakeVersion"      ,{"CMakeVersion"      , {"","3.0"}}},
+        {"ProjectName"       ,{"ProjectName"       , {""}}},
+        {"Author"            ,{"Author"            , {""}}},
+        {"Email"             ,{"Email"             , {""}}},
+        {"Targets"           ,{"Targets List"      , {""}}},
         {"ModulesDependency" ,{"ModulesDependency" , {""}}},
         {"MasterName"        ,{"MasterName"        , {""}}},
         {"InstallTargets"    ,{"InstallTargets"    , {""}}}
@@ -48,9 +52,12 @@ mBasePath(aBasePath)
         {"CMakeVersion"       ,&Master::xValue},
         {"ModulesDependency"  ,&Master::xModulesDependency},
         {"MasterName"         ,&Master::xValue},
-        {"InstallTargets"     ,&Master::xInstallTargets}
+        {"InstallTargets"     ,&Master::xInstallTargets},
+        {"ProjectName"        ,&Master::xValue},
+        {"Author"             ,&Master::xValue},
+        {"Email"              ,&Master::xValue},
+        {"Targets"            ,&Master::xTargets}
     };
-
 }
 
 Master::Master(const Master& other)
@@ -91,8 +98,7 @@ int32_t Master::xValue(File::Variable& Var)
 {
     LString::List& L = Var.second;
     if(!L.empty()){
-        LString::List::iterator I = L.begin();
-        mOutFile << *I;
+        mOutFile << L[1];
         return ErrCode::Ok;
     }
     return ErrCode::NullValue;
@@ -102,11 +108,17 @@ Master::~Master()
 {
     for(auto VI : mVariables){
         VI.second.second.clear(); // <LString::List>
-        VI.second.first.clear();  // <LString  ( UI Label text storage)>
+        VI.second.first.clear();  // <LString  ( Text storage for UI Label )>
     }
     mVariables.clear();
     mParsers.clear();
 }
+
+int32_t Master::xTargets(File::Variable& Var)
+{
+    return ErrCode::Implement;
+}
+
 
 int32_t Master::EndParseVariable(File::Variable& Var)
 {
@@ -117,8 +129,5 @@ int32_t Master::EndParseVariable(File::Variable& Var)
     LexerMsg::PushWarning(ErrCode::Implement) + LString("No Generator implemented for variable: `%s`").Arg(Var.first);
     return ErrCode::Implement;
 }
-
-
-
 
 }

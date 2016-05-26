@@ -63,12 +63,33 @@ File* File::QueryGenerator(const LString& ID)
 }
 
 
+
+/*!
+    @brief Direct access to the variable
+
+    @code
+        (*Generator)["Author"].second.push_back("Serge Lussier");
+*/
+
 File::Variable& File::operator[](const LString& VariableID)
 {
     File::Dictionary::iterator It = mVariables.find(VariableID);
     if(It != File::mVariables.end()) return It->second;
     return VSV;
 }
+
+void File::Assign(File::Variable& V, const LString::List& Value)
+{
+    V.second = Value;
+}
+
+void File::Assign(File::Variable& V, const LString& Value)
+{
+    lfnl << "ID:`" << V.first << "\n";
+    V.second.push_back(Value);
+}
+
+
 
 ///@todo : Contr&ocirc;ler les num. de ligne et colonnes......
 int32_t File::BeginParseVariable()

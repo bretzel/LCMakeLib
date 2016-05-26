@@ -55,10 +55,11 @@ public:
     File(const LString aID, const LString& aCMakeTemplateFile, const LString& aCMakeOutputFile);
 
     Variable& operator[](const LString& VariableID);
+
     static int32_t PushGenerator(const LString& ID, File* pFile);
     static File* QueryGenerator(const LString& ID);
-
-
+    static void  Assign(File::Variable& V, const LString& Value);
+    static void  Assign(File::Variable& V, const LString::List& Value);
 
     LString ID() const { return mID; }
     void    SetID(const LString& aID){
@@ -75,6 +76,8 @@ public:
     int32_t BeginParseVariable();
     virtual int32_t EndParseVariable(File::Variable& Var) = 0;
 };
+
+
 
 
 template<typename Generator> class CMakeFile : public File
@@ -104,6 +107,7 @@ protected:
     }
 
 };
+
 
 
 }

@@ -28,6 +28,8 @@ namespace LCMake {
 
 class Target : public LObject
 {
+
+
 public:
 
     typedef std::map<LString, Target*> List;

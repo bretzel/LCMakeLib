@@ -41,10 +41,10 @@ add_library(
 target_link_libraries(LCMakeLib ${LUS_LIBRARY})
 
 add_executable(LCMake.App main.c++)
-target_link_libraries(LCMake.App ${LUS_LIBRARY})
+target_link_libraries(LCMake.App LCMakeLib ${LUS_LIBRARY})
 
 
-INSTALL(TARGETS LCMake.App RUNTIME DESTINATION Libraries/LCMakeLib/Bin )
+INSTALL(TARGETS LCMake.App LCMakeLib RUNTIME DESTINATION Libraries/LCMakeLib/Bin LIBRARY DESTINATION Libraries )
 
 INSTALL(FILES ${LCMAKE_HDR} DESTINATION  Libraries/LCMakeLib/Include )
 INSTALL(FILES FindLCMakeLib.cmake DESTINATION  ${CMAKE_MODULE_PATH} )

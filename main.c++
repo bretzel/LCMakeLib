@@ -2,9 +2,18 @@
 
 #include <Journal++.h>
 #include <unistd.h>
-#include <COptions.h>
+#include <Master.h>
 
+using namespace LCMake;
 
+int32_t Test_Master()
+{
+    Master M("MyProject", "/home/bretzelus/Applications/CMake.App");
+    File::Variable& V = M["Author"];
+    File::Assign(V, "Bretzelus-I");
+    lfnl << "Variable :`" << V.first << " = `" << V.second[1] << "`\n";
+    return ErrCode::Ok;
+}
 
 
 int main (int argc, char **argv)
@@ -31,6 +40,7 @@ int main (int argc, char **argv)
         JCNote << " Code mode:" <<  Journal::lf << Journal::code << t << Journal::endcode << Journal::lf
               << Journal::lf << Journal::white << "end code mode..." << ends;
         
+        Test_Master();
         Journal::close();
     }
     catch(const char* err){
