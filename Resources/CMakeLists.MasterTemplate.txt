@@ -1,0 +1,25 @@
+#CMake Master Project txt File
+cmake_minimum_required(VERSION %CMakeVersion)
+project(%ProjectName)
+
+include (SetupEnv.cmake)
+
+%ModulesDependency
+
+set (CMAKE_INSTALL_PREFIX ${HROOT}/%MasterName)
+message("Install Prefix (overwrite):" ${CMAKE_INSTALL_PREFIX})
+include_directories(${CMAKE_CURRENT_BINARY_DIR} "<Insert Include Dirs Here>")
+
+
+add_executable(%TargetName "<Insert source files here>")
+target_link_libraries(%TargetName "<Insert Deps here>")
+
+%InstallTargets
+
+
+
+#   CMakeVersion
+#   ModulesDependency
+#   MasterName
+#   InstallTargets
+
