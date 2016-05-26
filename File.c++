@@ -79,7 +79,7 @@ int32_t File::BeginParseVariable()
     mInFile.get(C);
     if(C == '`')
         mInFile.get(C);
-    while(mInFile.eof()){
+    while(!mInFile.eof()){
         mInFile.get(C);
         if(C == '`'){
             mInFile.get(C);
@@ -131,9 +131,7 @@ int32_t File::OpenOutput()
     if(!mOutFile.good())
         throw LexerMsg::PushError(ErrCode::Rejected, 0) + LString(" - %s").Arg(strerror(errno));
 
-
     return ErrCode::Ok;
-
 }
 
 int32_t File::Generate()
@@ -158,8 +156,6 @@ int32_t File::Generate()
     }
     return ErrCode::Ok;
 }
-
-
 
 
 }

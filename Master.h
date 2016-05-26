@@ -1,6 +1,6 @@
 /*
  * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2016  <copyright holder> <email>
+ * Copyright (C) 2016 Serge Lussier (Bretzelus-I), lussier.serge@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,11 +29,12 @@ class Master : public CMakeFile<LCMake::Master>
 {
 
     Target::List    mTargets;
-
+    LString         mBasePath;
 public:
 
     Master();
     Master(const Master& other);
+    Master(const LString aID, const LString& aBasePath);
     ~Master();
     Master& operator=(const Master& other);
     bool operator==(const Master& other) const;

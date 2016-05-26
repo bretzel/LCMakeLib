@@ -19,7 +19,16 @@
 
 #include "Master.h"
 
+#define CMAKE_TEMPLATE_FILE "../Resource/CMake.Master.txt"
+#define CMAKE_OUTPUT_FILENAME   "CMakeLists.txt"
+
+
 namespace LCMake {
 
+Master::Master(const LString aID, const LString& aBasePath): CMakeFile< LCMake::Master >(aID)
+{
+
+}
+    
 
 }
