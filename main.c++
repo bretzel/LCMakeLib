@@ -10,8 +10,16 @@ int32_t Test_Master()
 {
     Master M("MyProject", "/home/bretzelus/Applications/CMake.App");
     File::Variable& V = M["Author"];
-    File::Assign(V, "Bretzelus-I");
-    lfnl << "Variable :`" << V.first << " = `" << V.second[1] << "`\n";
+    V =  "Bretzelus-I";
+    lfnl << "Variable :`" << V.mLabel << "` = `" << cyellow << V.mValue[0] << creset << "`\n";
+    File::Variable& Email = M["Email"];
+    Email =  "lussier.serge@gmail.com";
+    lfnl << chblue << "Variable :`" << cwhite << Email.mLabel << "` = `" << chcyan << Email.mValue[0] << creset << "`\n";
+    
+    M.OpenInput();
+    M.OpenOutput();
+    M.Generate();
+    
     return ErrCode::Ok;
 }
 
@@ -47,6 +55,9 @@ int main (int argc, char **argv)
         std::cerr << err << "\n";
         //Journal::close();
         return 1;
+    }
+    catch(LexerMsg E){
+        std::cerr << E.cc() << "\n";
     }
     return 0;
 }

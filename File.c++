@@ -35,6 +35,72 @@ static File::Variable VSV = {"",{""}};
 
 
 
+LCMake::File::Variable::Variable(const LString& aID, const LString& aValue)
+{
+    mLabel = aID;
+    mValue.push_back(aValue);
+}
+
+
+LCMake::File::Variable::Variable(const LCMake::File::Variable& V)
+{
+    mLabel  = V.mLabel;
+    mValue  = V.mValue; 
+}
+
+LCMake::File::Variable::~Variable()
+{
+    //lfnl << "CHecking Data:\n";
+    for(auto VI : mValue){
+        VI.clear();
+    }
+    mValue.clear();
+    mLabel.clear();
+}
+
+
+File::Variable& File::Variable::operator=(const LString::List& Data)
+{
+    mValue = Data;
+    return *this;
+}
+
+File::Variable& File::Variable::operator=(const LString& Data)
+{
+    mValue.clear();
+    mValue.push_back(Data);
+    return *this;
+}
+
+File::Variable& File::Variable::operator<<(const LString::List& Data)
+{
+    for(auto L : Data) mValue.push_back(L);
+    return *this;
+}
+
+
+
+File::Variable& File::Variable::operator<<(const LString& Data)
+{
+    mValue.push_back(Data);
+    return *this;
+}
+
+
+File::Variable& File::Variable::operator=(const File::Variable& V)
+{
+    mLabel = V.mLabel;
+    mValue = V.mValue;
+    return *this;
+}
+
+bool File::Variable::operator==(const File::Variable& V)
+{
+    return mLabel == V.mLabel;
+}
+
+
+
 
 File::File(const LString aID, const LString& aCMakeTemplateFile, const LString& aCMakeFile):
 mCMakeTemplateFile(aCMakeTemplateFile),
@@ -80,13 +146,13 @@ File::Variable& File::operator[](const LString& VariableID)
 
 void File::Assign(File::Variable& V, const LString::List& Value)
 {
-    V.second = Value;
+    V.mValue = Value;
 }
 
 void File::Assign(File::Variable& V, const LString& Value)
 {
-    lfnl << "ID:`" << V.first << "\n";
-    V.second.push_back(Value);
+    lfnl << "ID:`" << V.mLabel << "\n";
+    V.mValue.push_back(Value);
 }
 
 
@@ -125,10 +191,10 @@ int32_t File::BeginParseVariable()
         throw LexerMsg::PushError(ErrCode::Invalid) + "Malformed variable name substitution";
     }
     File::Variable& Var = (*this)[VarName];
-    if(Var.first.empty()){
+    if(Var.mLabel.empty()){
         File* F = File::QueryGenerator("CMakeMaster");
         Var = (*F)[VarName];
-        if(Var.first.empty())
+        if(Var.mValue.empty())
             throw LexerMsg::PushError(ErrCode::ObjectNotFound) + LString("%s").Arg(VarName);
     }
     EndParseVariable(Var); // Variable contents to be expanded out to the output file, which is directly accessible from the derived specialized Generators
@@ -153,7 +219,7 @@ int32_t File::OpenInput()
 {
     mInFile.open(mCMakeTemplateFile.c_str(), std::ios::in);
     if(!mInFile.good())
-        throw LexerMsg::PushError(ErrCode::Rejected, 0) + LString(" - %s").Arg(strerror(errno));
+        throw LexerMsg::PushError(ErrCode::Rejected, 0) + LString("Input Template: [%s] - %s").Arg(mCMakeTemplateFile).Arg(strerror(errno));
 
     return ErrCode::Ok;
 }
@@ -162,7 +228,7 @@ int32_t File::OpenOutput()
 {
     mOutFile.open(mCMakeOutputFile.c_str(), std::ios::out);
     if(!mOutFile.good())
-        throw LexerMsg::PushError(ErrCode::Rejected, 0) + LString(" - %s").Arg(strerror(errno));
+        throw LexerMsg::PushError(ErrCode::Rejected, 0) + LString("Output File:[%s] - %s").Arg(mCMakeOutputFile).Arg(strerror(errno));
 
     return ErrCode::Ok;
 }

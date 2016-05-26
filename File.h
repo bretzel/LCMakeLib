@@ -45,8 +45,30 @@ protected:
     std::ifstream   mInFile;
 
 public:
+    
+    struct Variable{
+        LString       mLabel;
+        LString::List mValue;
+        
+        Variable(){}
+        Variable(const LString& aID, const LString& aValue);
+        Variable(const Variable& V);
+        ~Variable();
+        
+        //- --------------------- CUSTOM OPERATORS ----------------
+        // ...
+        Variable& operator = (const Variable& V);
+        Variable& operator = (const LString& Data);
+        Variable& operator = (const LString::List& Data);
+        Variable& operator << ( const LString& Data);
+        Variable& operator << (const LString::List& Data);
+        
+        bool operator == (const Variable& V);
+        //- -------------------------------------------------------
+        
+    };
+    
     typedef std::map<LString, File*>          List;
-    typedef std::pair<LString, LString::List> Variable;
     typedef std::map<LString, Variable>       Dictionary;
 
     static List sFiles;

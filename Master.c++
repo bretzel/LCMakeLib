@@ -19,7 +19,7 @@
 
 #include "Master.h"
 
-#define CMAKE_MASTERTEMPLATE_FILE "../Resources/CMake.MasterTemplate.txt" // As long as the working dir is the Bin subdir
+#define CMAKE_MASTERTEMPLATE_FILE "../Resources/CMakeLists.MasterTemplate.txt" // As long as the working dir is the Bin subdir
 #define CMAKE_OUTPUT_FILENAME   "CMakeLists.txt"
 
 
@@ -38,7 +38,7 @@ mBasePath(aBasePath)
 
 
     mVariables = {
-        {"CMakeVersion"      ,{"CMakeVersion"      , {"","3.0"}}},
+        {"CMakeVersion"      ,{"CMakeVersion"      , {""}}},
         {"ProjectName"       ,{"ProjectName"       , {""}}},
         {"Author"            ,{"Author"            , {""}}},
         {"Email"             ,{"Email"             , {""}}},
@@ -96,7 +96,7 @@ int32_t Master::xModulesDependency(File::Variable& Var)
 
 int32_t Master::xValue(File::Variable& Var)
 {
-    LString::List& L = Var.second;
+    LString::List& L = Var.mValue;
     if(!L.empty()){
         mOutFile << L[1];
         return ErrCode::Ok;
@@ -106,11 +106,7 @@ int32_t Master::xValue(File::Variable& Var)
 
 Master::~Master()
 {
-    for(auto VI : mVariables){
-        VI.second.second.clear(); // <LString::List>
-        VI.second.first.clear();  // <LString  ( Text storage for UI Label )>
-    }
-    mVariables.clear();
+    
     mParsers.clear();
 }
 
@@ -122,11 +118,11 @@ int32_t Master::xTargets(File::Variable& Var)
 
 int32_t Master::EndParseVariable(File::Variable& Var)
 {
-    GeneratorFN G = (*this)(Var.first);
+    GeneratorFN G = (*this)(Var.mLabel);
     if(G)
         return (this->*G)(Var);
     ///@todo Check that the variable id is really defined somewhere
-    LexerMsg::PushWarning(ErrCode::Implement) + LString("No Generator implemented for variable: `%s`").Arg(Var.first);
+    LexerMsg::PushWarning(ErrCode::Implement) + LString("No Generator implemented for variable: `%s`").Arg(Var.mLabel);
     return ErrCode::Implement;
 }
 
