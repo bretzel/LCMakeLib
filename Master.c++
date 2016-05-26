@@ -19,16 +19,21 @@
 
 #include "Master.h"
 
-#define CMAKE_TEMPLATE_FILE "../Resource/CMake.Master.txt"
+#define CMAKE_TEMPLATE_FILE "../Resource/CMake.Master.txt" // As long as the working dir is the Bin subdir 
 #define CMAKE_OUTPUT_FILENAME   "CMakeLists.txt"
 
 
 namespace LCMake {
 
-Master::Master(const LString aID, const LString& aBasePath): CMakeFile< LCMake::Master >(aID)
+Master::Master(const LString aID, const LString& aBasePath):
+mBasePath(aBasePath),
+CMakeFile< LCMake::Master >(aID, CMAKE_TEMPLATE_FILE, aBasePath + '/' + CMAKE_OUTPUT_FILENAME)
 {
-
+    mVariables = {
+        {"" , {"", {""}}}
+        
+    };
 }
-    
+
 
 }
