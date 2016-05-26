@@ -83,15 +83,10 @@ template<typename Generator> class CMakeFile : public File
 public:
 
     typedef int32_t (Generator::*GeneratorFN)(File::Variable& );
-
     typedef std::map<LString, typename CMakeFile<Generator>::GeneratorFN> VariableParser;
 
-    // (this->*FN)(V);
-
     CMakeFile(): File(){}
-    CMakeFile(const LString aID, const LString& aCMakeTemplateFile, const LString& aCMakeOutputFile): File(aID, aCMakeTemplateFile,aCMakeOutputFile){
-
-    }
+    CMakeFile(const LString aID, const LString& aCMakeTemplateFile, const LString& aCMakeOutputFile): File(aID, aCMakeTemplateFile,aCMakeOutputFile){}
 
     virtual ~CMakeFile(){
         mParsers.clear();

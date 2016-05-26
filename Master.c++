@@ -108,5 +108,17 @@ Master::~Master()
     mParsers.clear();
 }
 
+int32_t Master::EndParseVariable(File::Variable& Var)
+{
+    GeneratorFN G = (*this)(Var.first);
+    if(G)
+        return (this->*G)(Var);
+    ///@todo Check that the variable id is really defined somewhere
+    LexerMsg::PushWarning(ErrCode::Implement) + LString("No Generator implemented for variable: `%s`").Arg(Var.first);
+    return ErrCode::Implement;
+}
+
+
+
 
 }

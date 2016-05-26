@@ -1,6 +1,6 @@
 /*
  * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2016  <copyright holder> <email>
+ * Copyright (C) 2016 Serge Lussier (Bretzelus-I), lussier.serge@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,18 +70,25 @@ File::Variable& File::operator[](const LString& VariableID)
     return VSV;
 }
 
-
+///@todo : Contr&ocirc;ler les num. de ligne et colonnes......
 int32_t File::BeginParseVariable()
 {
     // On '%'  :
     LString VarName;
     char C;
+    bool rdelim = false;
+    bool prot =false;
     mInFile.get(C);
-    if(C == '`')
+    if(C == '`'){
         mInFile.get(C);
+        rdelim = false;
+        prot = true;
+    }
     while(!mInFile.eof()){
         mInFile.get(C);
         if(C == '`'){
+            if(!prot)
+                throw LexerMsg::PushError(ErrCode::Invalid) + "Malformed variable name substitution";
             mInFile.get(C);
             break;
         }
@@ -91,7 +98,11 @@ int32_t File::BeginParseVariable()
     }
     if(mInFile.eof())
         throw LexerMsg::PushError(ErrCode::Eeof) + " - Unexpected" ;
-
+    if(VarName.empty())
+        throw LexerMsg::PushError(ErrCode::NullValue) + " Variable identifier cannot be null";
+    if(prot && !rdelim){
+        throw LexerMsg::PushError(ErrCode::Invalid) + "Malformed variable name substitution";
+    }
     File::Variable& Var = (*this)[VarName];
     if(Var.first.empty()){
         File* F = File::QueryGenerator("CMakeMaster");
@@ -100,6 +111,7 @@ int32_t File::BeginParseVariable()
             throw LexerMsg::PushError(ErrCode::ObjectNotFound) + LString("%s").Arg(VarName);
     }
     EndParseVariable(Var); // Variable contents to be expanded out to the output file, which is directly accessible from the derived specialized Generators
+    ///@todo check that the cursor is at the right position into the input file....
     return ErrCode::Ok;
 }
 

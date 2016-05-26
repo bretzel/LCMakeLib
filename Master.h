@@ -42,7 +42,7 @@ public:
     int32_t xValue             (File::Variable& Var);    // Single Value
     int32_t xModulesDependency (File::Variable& Var);    // Specialized Generator
     int32_t xInstallTargets    (File::Variable& Var);    // Specialized Generator
-    
+    virtual int32_t EndParseVariable(Variable& Var);
 
 };
 
