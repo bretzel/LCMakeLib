@@ -2,14 +2,14 @@
 
 #include <Journal++.h>
 #include <unistd.h>
-#include <Master.h>
+#include <CMakeTemplate.h>
 
 using namespace LCMake;
 
 int32_t Test_Master()
 {
     ///home/bretzelus/Applications/LCMake.App/LCMake.Src
-    Master M("MyProject", "/home/bretzelus/Applications/LCMake.App/LCMake.Src");
+    CMakeTemplate M("MyProject", "/home/bretzelus/Applications/LCMake.App/LCMake.Src");
 
     M["CMakeVersion"]   =  "3.0";
     M["Author"]         =  "Bretzelus-I";

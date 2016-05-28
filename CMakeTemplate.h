@@ -25,7 +25,7 @@
 #include <Target.h>
 namespace LCMake {
 
-class Master : public CMakeFile<LCMake::Master>
+class CMakeTemplate : public CMakeFile<LCMake::CMakeTemplate>
 {
 
     Target::List    mTargets;
@@ -33,18 +33,19 @@ class Master : public CMakeFile<LCMake::Master>
 
 public:
 
-    Master();
-    Master(const Master& other);
-    Master(const LString& aID, const LString& aBasePath);
-    ~Master();
-    Master& operator=(const Master& other);
-    bool operator==(const Master& other) const;
+    CMakeTemplate();
+    CMakeTemplate(const CMakeTemplate& other);
+    CMakeTemplate(const LString& aID, const LString& aBasePath);
+    ~CMakeTemplate();
+    CMakeTemplate& operator=(const CMakeTemplate& other);
+    bool operator==(const CMakeTemplate& other) const;
 
     int32_t xValue             (File::Variable& Var);    // Single Value
     int32_t xModulesDependency (File::Variable& Var);    // Specialized Generator
     int32_t xInstallTargets    (File::Variable& Var);    // Specialized Generator
     int32_t xTargets           (File::Variable& Var);    // Specialized Generator
 
+    CMakeTemplate&  operator << (const Target& TG);
     virtual int32_t EndParseVariable(Variable& Var);
 
 };

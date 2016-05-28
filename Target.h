@@ -21,41 +21,36 @@
 //#define LCMAKE_TARGET_H
 // Disabled protected include, using pragma:
 #pragma once
-
-#include <LObject.h>
 #include <map>
+#include <LString++.h>
+
+
 namespace LCMake {
 
-class Target : public LObject
+struct Target
 {
 
+    typedef std::map<LString, Target> List;
 
-public:
-
-    typedef std::map<LString, Target*> List;
-
-    enum class Type: int {
-        APP,
-        DYNAMIC,
-        STATIC
+    enum Enum {
+        APP,     // RUNTIME
+        DYNAMIC, // LIBRARY
+        STATIC   // ARCHIVE
     };
 
     Target();
     Target(const Target& other);
-    Target(LObject* aParent, const LString& aID, Target::Type aType);
+    Target(const LString& aID, Target::Enum aType);
     virtual ~Target();
 
     Target& operator=(const Target& other);
     bool operator==(const Target& other) const;
-    static Target* Seek(const LString& aID);
-    static Target::List& Targets() {
-        return Target::sTargets;
-    }
+    LString Name() const { return mName; }
+    static LString Type(Target::Enum TG);
 
 private:
-    Target::Type mTargetType = Type::APP;
-    static List sTargets;
-
+    Enum mTargetType;
+    LString      mName;
 };
 
 

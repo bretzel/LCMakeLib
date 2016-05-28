@@ -17,15 +17,17 @@
  *
  */
 
-#include "Master.h"
+#include "CMakeTemplate.h"
 
+// ----------- TEMPORAIRE -- POUR FIN DE TESTS ET R&DEV!!..:-) -------------------------------------------------------------------------
 #define CMAKE_MASTERTEMPLATE_FILE "../Resources/CMakeLists.MasterTemplate.txt" // As long as the working dir is the Bin subdir
 #define CMAKE_OUTPUT_FILENAME   "CMakeLists.txt"
+// --------------------------------------------------------------------------------------------------------------------------------
 
 
 namespace LCMake {
 
-Master::Master(const LString& aID, const LString& aBasePath): CMakeFile< LCMake::Master >(aID, CMAKE_MASTERTEMPLATE_FILE, aBasePath + '/' + CMAKE_OUTPUT_FILENAME),
+CMakeTemplate::CMakeTemplate(const LString& aID, const LString& aBasePath): CMakeFile< LCMake::CMakeTemplate >(aID, CMAKE_MASTERTEMPLATE_FILE, aBasePath + '/' + CMAKE_OUTPUT_FILENAME),
 mBasePath(aBasePath)
 {
     /*
@@ -40,8 +42,8 @@ mBasePath(aBasePath)
     mVariables = {
         {"CMakeVersion"      ,{"CMakeVersion"      ,"CMake Minimum Version", {""}}},
         {"ProjectName"       ,{"ProjectName"       ,"Project Name"       , {""}}},
-        {"Author"            ,{"Author"            ,"Author"            , {""}}},
-        {"Email"             ,{"Email"             ,"Email"             , {""}}},
+        {"Author"            ,{"Author"            ,"Author"            , {"Serge Lussier"}}},
+        {"Email"             ,{"Email"             ,"Email"             , {"lussier.serge@gmail.com"}}},
         {"Targets"           ,{"Targets"           ,"Targets List"      , {""}}},
         {"ModulesDependency" ,{"ModulesDependency" ,"Modules Dependency" , {""}}},
         {"MasterName"        ,{"MasterName"        ,"MasterName"        , {""}}},
@@ -49,48 +51,48 @@ mBasePath(aBasePath)
     };
 
     mParsers = {
-        {"CMakeVersion"       ,&Master::xValue},
-        {"ModulesDependency"  ,&Master::xModulesDependency},
-        {"MasterName"         ,&Master::xValue},
-        {"InstallTargets"     ,&Master::xInstallTargets},
-        {"ProjectName"        ,&Master::xValue},
-        {"Author"             ,&Master::xValue},
-        {"Email"              ,&Master::xValue},
-        {"Targets"            ,&Master::xTargets}
+        {"CMakeVersion"       ,&CMakeTemplate::xValue},
+        {"ModulesDependency"  ,&CMakeTemplate::xModulesDependency},
+        {"MasterName"         ,&CMakeTemplate::xValue},
+        {"InstallTargets"     ,&CMakeTemplate::xInstallTargets},
+        {"ProjectName"        ,&CMakeTemplate::xValue},
+        {"Author"             ,&CMakeTemplate::xValue},
+        {"Email"              ,&CMakeTemplate::xValue},
+        {"Targets"            ,&CMakeTemplate::xTargets}
     };
 }
 
-Master::Master(const Master& other)
+CMakeTemplate::CMakeTemplate(const CMakeTemplate& other)
 {
 
 }
 
-Master::Master()
+CMakeTemplate::CMakeTemplate()
 {
 
 }
 
 
-Master& Master::operator=(const Master& other)
+CMakeTemplate& CMakeTemplate::operator=(const CMakeTemplate& other)
 {
     return *this;
 }
 
 
-bool Master::operator==(const Master& other) const
+bool CMakeTemplate::operator==(const CMakeTemplate& other) const
 {
     return ID() == other.ID();
 }
 
 
-int32_t Master::xInstallTargets(File::Variable& Var)
+int32_t CMakeTemplate::xInstallTargets(File::Variable& Var)
 {
     mOutFile << '[' << Var.mID << ": unimplemented]";
     return ErrCode::Implement;
 }
 
 
-int32_t Master::xModulesDependency(File::Variable& Var)
+int32_t CMakeTemplate::xModulesDependency(File::Variable& Var)
 {
     mOutFile << "# Modules Dependencies:" << std::endl;
     if(!Var.mValue.empty()){
@@ -100,7 +102,7 @@ int32_t Master::xModulesDependency(File::Variable& Var)
     return ErrCode::Implement;
 }
 
-int32_t Master::xValue(File::Variable& Var)
+int32_t CMakeTemplate::xValue(File::Variable& Var)
 {
     lfnl << "Varibale: [" << chgreen << Var.mID << creset << Var.mValue.front() << ": \n" ;
     LString::List& L = Var.mValue;
@@ -111,19 +113,26 @@ int32_t Master::xValue(File::Variable& Var)
     return ErrCode::NullValue;
 }
 
-Master::~Master()
+CMakeTemplate::~CMakeTemplate()
 {
     
     mParsers.clear();
 }
 
-int32_t Master::xTargets(File::Variable& Var)
+int32_t CMakeTemplate::xTargets(File::Variable& Var)
 {
+
     return ErrCode::Implement;
 }
 
+CMakeTemplate& CMakeTemplate::operator<<(const Target& TG)
+{
+    mTargets[TG.Name()] = TG;
+    return *this;
+}
 
-int32_t Master::EndParseVariable(File::Variable& Var)
+
+int32_t CMakeTemplate::EndParseVariable(File::Variable& Var)
 {
     GeneratorFN G = (*this)(Var.mID);
     lfnl << ":\n";

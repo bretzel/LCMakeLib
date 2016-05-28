@@ -50,10 +50,13 @@ public:
         LString       mID;
         LString       mLabel;
         LString::List mValue;
-        
+
+        typedef LString::List::iterator ValueIterator;
+
         Variable(){}
         Variable(const LString& aID, const LString& aLabel,const LString& aValue);
         Variable(const Variable& V);
+
         ~Variable();
         
         //- --------------------- CUSTOM OPERATORS ----------------
@@ -63,13 +66,25 @@ public:
         Variable& operator = (const LString::List& Data);
         Variable& operator << ( const LString& Data);
         Variable& operator << (const LString::List& Data);
+        Variable& operator >>(LString& Value);
+
+        // -------------- Sous réserve -------------------------
+        template<typename T> Variable& operator >> (T& Value){
+            LString V;
+            (*this) >> V;
+            if(V.empty()) return *this;
+            V >> Value;  // std:ostrstream magic....
+            return *this;
+        }
+        // -----------------------------------------------------
+        void Reset();
         Variable& Clear(){
             mValue.clear();
             return *this;
         }
         bool operator == (const Variable& V);
         //- -------------------------------------------------------
-        
+        ValueIterator mValueIterator;
     };
     
     typedef std::map<LString, File*>          List;

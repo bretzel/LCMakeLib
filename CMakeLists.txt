@@ -20,12 +20,12 @@ FILE(GLOB LCMAKE_SRC
 
     File.c++
     Target.c++
-    Master.c++
+    CMakeTemplate.c++
 )
 
 FILE(GLOB LCMAKE_HDR
     Target.h
-    Master.h
+    CMakeTemplate.h
     File.h
 )
 

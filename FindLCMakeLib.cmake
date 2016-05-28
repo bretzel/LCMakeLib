@@ -15,7 +15,7 @@ if(LCMAKELIB_INCLUDE_DIR AND LCMAKELIB_LIBRARY)# AND LCMAKELIB_STATIC_LIB)
 
 else(LCMAKELIB_INCLUDE_DIR AND LCMAKELIB_LIBRARY)# AND LCMAKELIB_STATIC_LIB)
 
-    find_path(LCMAKELIB_INCLUDE_DIR NAMES LObject.h PATHS ${HROOT}/Libraries/LCMakeLib/Include /usr/include/LCMakeLib/ /usr/local/include)
+    find_path(LCMAKELIB_INCLUDE_DIR NAMES File.h PATHS ${HROOT}/Libraries/LCMakeLib/Include /usr/include/LCMakeLib/ /usr/local/include)
     message(STATUS ${LCMAKELIB_INCLUDE_DIR})
 
  

@@ -40,6 +40,7 @@ LCMake::File::Variable::Variable(const LString& aID, const LString& aLabel, cons
     mID    = aID;
     mLabel = aLabel;
     mValue.push_back(aValue);
+    mValueIterator = mValue.begin();
 }
 
 
@@ -48,6 +49,7 @@ LCMake::File::Variable::Variable(const LCMake::File::Variable& V)
     mID     = V.mID;
     mLabel  = V.mLabel;
     mValue  = V.mValue; 
+    mValueIterator = mValue.begin();
 }
 
 LCMake::File::Variable::~Variable()
@@ -65,6 +67,7 @@ File::Variable& File::Variable::operator=(const LString::List& Data)
 {
     mValue.clear();
     mValue = Data;
+    mValueIterator = mValue.begin();
     return *this;
 }
 
@@ -72,12 +75,14 @@ File::Variable& File::Variable::operator=(const LString& Data)
 {
     mValue.clear();
     mValue.push_back(Data);
+    mValueIterator = mValue.begin();
     return *this;
 }
 
 File::Variable& File::Variable::operator<<(const LString::List& Data)
 {
     for(auto L : Data) mValue.push_back(L);
+    mValueIterator = --mValue.end();
     return *this;
 }
 
@@ -86,6 +91,7 @@ File::Variable& File::Variable::operator<<(const LString::List& Data)
 File::Variable& File::Variable::operator<<(const LString& Data)
 {
     mValue.push_back(Data);
+    mValueIterator = --mValue.end();
     return *this;
 }
 
@@ -94,6 +100,7 @@ File::Variable& File::Variable::operator=(const File::Variable& V)
 {
     mLabel = V.mLabel;
     mValue = V.mValue;
+    mValueIterator = mValue.begin();
     return *this;
 }
 
@@ -102,6 +109,23 @@ bool File::Variable::operator==(const File::Variable& V)
     return mLabel == V.mLabel;
 }
 
+File::Variable& File::Variable::operator>>(LString& Value)
+{
+    if(mValueIterator != mValue.end()){
+        Value = *mValueIterator;
+        ++mValueIterator;
+    }
+    else
+        Value.clear();
+
+    LexerMsg::PushWarning(ErrCode::Oob) + "Variable [" + mID + "]-> Out of range ";
+    return *this;
+}
+
+void File::Variable::Reset()
+{
+    mValueIterator = mValue.begin();
+}
 
 
 
@@ -250,7 +274,7 @@ int32_t File::Generate()
                 BeginParseVariable();
                 continue;
             }
-            mOutFile << C; //.write(&C,1);//  << C;
+            mOutFile << C;
         }
         CloseInput();
         CloseOutput();

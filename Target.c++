@@ -21,13 +21,14 @@
 
 namespace LCMake {
 
-Target::List Target::sTargets;
 
 
-Target::Target(LObject* aParent, const LString& aID, Target::Type aType): LObject(aParent, aID),
-mTargetType(aType)
+
+Target::Target(const LString& aID, Target::Enum aType):
+mTargetType(aType),
+mName(aID)
 {
-    Target::sTargets[aID] = this;
+
 }
 
 
@@ -36,33 +37,42 @@ Target::Target()
 
 }
 
-Target::Target(const Target& other)
+Target::Target(const Target& tg)
 {
-
+    mName = tg.mName;
+    mTargetType = tg.mTargetType;
 }
 
 Target::~Target()
 {
-    Target::sTargets.erase(ID());
+
 }
 
-Target& Target::operator=(const Target& other)
+Target& Target::operator=(const Target& tg)
 {
+    mName = tg.mName;
+    mTargetType = tg.mTargetType;
     return *this;
 }
 
 bool Target::operator==(const Target& other) const
 {
-    return ID() == other.ID();
+    return (mName == other.mName) && (mTargetType == other.mTargetType);
+
 }
 
 
-
-Target* Target::Seek(const LString& aID)
+LString Target::Type(Target::Enum TG)
 {
-    Target::List::iterator It = Target::sTargets.find(aID);
-    return It != Target::sTargets.end() ? It->second : 0;
+    std::map<Target::Enum, LString> Tp;
+    Tp[Target::APP    ] ="RUNTIME";
+    Tp[Target::DYNAMIC] ="LIBRARY";
+    Tp[Target::STATIC ] = "ARCHIVE";
+
+
+    return Tp[TG];
 }
+
 
 
 }
