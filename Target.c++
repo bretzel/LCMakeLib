@@ -25,7 +25,7 @@ namespace LCMake {
 
 
 Target::Target(const LString& aID, Target::Enum aType):
-mTargetType(aType),
+mType(aType),
 mName(aID)
 {
 
@@ -40,7 +40,7 @@ Target::Target()
 Target::Target(const Target& tg)
 {
     mName = tg.mName;
-    mTargetType = tg.mTargetType;
+    mType = tg.mType;
 }
 
 Target::~Target()
@@ -51,13 +51,13 @@ Target::~Target()
 Target& Target::operator=(const Target& tg)
 {
     mName = tg.mName;
-    mTargetType = tg.mTargetType;
+    mType = tg.mType;
     return *this;
 }
 
 bool Target::operator==(const Target& other) const
 {
-    return (mName == other.mName) && (mTargetType == other.mTargetType);
+    return (mName == other.mName) && (mType == other.mType);
 
 }
 

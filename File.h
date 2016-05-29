@@ -40,6 +40,7 @@ protected:
 
     LString         mCMakeTemplateFile;
     LString         mCMakeOutputFile;
+
     LString         mID;
     std::ofstream   mOutFile;
     std::ifstream   mInFile;
@@ -85,6 +86,7 @@ public:
         bool operator == (const Variable& V);
         //- -------------------------------------------------------
         ValueIterator mValueIterator;
+        static Variable& GC();
     };
     
     typedef std::map<LString, File*>          List;

@@ -49,8 +49,9 @@ struct Target
     static LString Type(Target::Enum TG);
 
 private:
-    Enum mTargetType;
-    LString      mName;
+    Enum        mType;
+    LString     mName;
+    
 };
 
 

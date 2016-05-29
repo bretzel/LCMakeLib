@@ -31,7 +31,7 @@ namespace LCMake {
 
 File::List   File::sFiles;
 
-static File::Variable VSV = {"", "",{""}};
+static File::Variable VSV = {"UndefCollector", "Undef Collector",{""}};
 
 
 
@@ -125,6 +125,13 @@ File::Variable& File::Variable::operator>>(LString& Value)
 void File::Variable::Reset()
 {
     mValueIterator = mValue.begin();
+}
+
+
+
+File::Variable&   File::Variable::GC()
+{
+    return VSV; // See what's of undef catched
 }
 
 

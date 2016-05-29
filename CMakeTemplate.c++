@@ -44,6 +44,7 @@ mBasePath(aBasePath)
         {"ProjectName"       ,{"ProjectName"       ,"Project Name"       , {""}}},
         {"Author"            ,{"Author"            ,"Author"            , {"Serge Lussier"}}},
         {"Email"             ,{"Email"             ,"Email"             , {"lussier.serge@gmail.com"}}},
+        {"Alias"             ,{"Alias"             ,"Alias"             , {"Bretzelus-I"}}},
         {"Targets"           ,{"Targets"           ,"Targets List"      , {""}}},
         {"ModulesDependency" ,{"ModulesDependency" ,"Modules Dependency" , {""}}},
         {"MasterName"        ,{"MasterName"        ,"MasterName"        , {""}}},
