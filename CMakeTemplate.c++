@@ -146,4 +146,23 @@ int32_t CMakeTemplate::EndParseVariable(File::Variable& Var)
     return ErrCode::Implement;
 }
 
+Target CMakeTemplate::TargetByID(const LString& aID)
+{
+    Target::List::iterator I = mTargets.find(aID);
+    if(I != mTargets.end())
+        return I->second;
+    return Target();
+}
+
+void CMakeTemplate::UpdateTargetByID(const LString& aID, const LCMake::Target& Tg)
+{
+    Target::List::iterator I = mTargets.find(aID);
+    if(I != mTargets.end()){
+        Target& T = I->second;
+        T = Tg;
+    }
+
+}
+
+
 }

@@ -31,6 +31,11 @@ class CMakeTemplate : public CMakeFile<LCMake::CMakeTemplate>
     Target::List    mTargets;
     LString         mBasePath;
 
+    //
+    LString::List   mIncludeDirsList;     ///< Global repo of the CMAKE_INCLUDE variables set by the Modules Dependency no matter the target
+    LString::List   mLibrariesDependList; ///< Global repo of the List of CMAKE variables set for the Libraries dependency
+
+
 public:
 
     CMakeTemplate();
@@ -46,7 +51,11 @@ public:
     int32_t xTargets           (File::Variable& Var);    // Specialized Generator
 
     CMakeTemplate&  operator << (const Target& TG);
+
     virtual int32_t EndParseVariable(Variable& Var);
+    Target::List    Targets(){ return mTargets; } // Deep; recursive copies. Yup...
+    Target          TargetByID(const LString& aID);
+    void            UpdateTargetByID(const LString& aID, const LCMake::Target& Tg);
 
 };
 

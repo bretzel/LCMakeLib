@@ -41,17 +41,20 @@ Target::Target(const Target& tg)
 {
     mName = tg.mName;
     mType = tg.mType;
+    mDeps = tg.mDeps;
 }
 
 Target::~Target()
 {
-
+    mDeps.clear();
+    mName.clear();
 }
 
 Target& Target::operator=(const Target& tg)
 {
     mName = tg.mName;
     mType = tg.mType;
+    mDeps = tg.mDeps;
     return *this;
 }
 
@@ -73,6 +76,11 @@ LString Target::Type(Target::Enum TG)
     return Tp[TG];
 }
 
+Target& Target::operator<<(const LString& dep)
+{
+    mDeps.push_back(dep);
+    return *this;
+}
 
 
 }

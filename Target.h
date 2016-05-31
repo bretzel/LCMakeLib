@@ -36,7 +36,7 @@ struct Target
         APP,     // RUNTIME
         DYNAMIC, // LIBRARY
         STATIC   // ARCHIVE
-    };
+    }; ///< Types of target.
 
     Target();
     Target(const Target& other);
@@ -47,11 +47,17 @@ struct Target
     bool operator==(const Target& other) const;
     LString Name() const { return mName; }
     static LString Type(Target::Enum TG);
+    Target& operator << (const LString& dep);
+    void    SetDepLibsVariablesList(const LString::List& CMakeVariables){ mLibrariesDependList = CMakeVariables; }
+    LString::List Dependencies() { return mDeps; }
+
 
 private:
     Enum        mType;
     LString     mName;
-    
+    LString::List mDeps;                 ///< Target's specific list of CMake Modules Dependencies.
+    LString::List mLibrariesDependList;  ///< Part or complete set of the Libraries depends as ` TARGET_LINK_LIBRARIES(this->mName ${CMAKE_%DEPNAME_LIBARIES}) ` from the Master CMakeLists.
+
 };
 
 
