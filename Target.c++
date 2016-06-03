@@ -22,7 +22,7 @@
 namespace LCMake {
 
 
-
+Target Target::Null("", Target::Enum::Null);
 
 Target::Target(const LString& aID, Target::Enum aType):
 mType(aType),
@@ -55,6 +55,7 @@ Target& Target::operator=(const Target& tg)
     mName = tg.mName;
     mType = tg.mType;
     mDeps = tg.mDeps;
+    mLibrariesDependList = tg.mLibrariesDependList;
     return *this;
 }
 
@@ -68,9 +69,9 @@ bool Target::operator==(const Target& other) const
 LString Target::Type(Target::Enum TG)
 {
     std::map<Target::Enum, LString> Tp;
-    Tp[Target::APP    ] ="RUNTIME";
-    Tp[Target::DYNAMIC] ="LIBRARY";
-    Tp[Target::STATIC ] = "ARCHIVE";
+    Tp[Target::Enum::APP    ] ="RUNTIME";
+    Tp[Target::Enum::DYNAMIC] ="LIBRARY";
+    Tp[Target::Enum::STATIC ] = "ARCHIVE";
 
 
     return Tp[TG];
@@ -80,6 +81,15 @@ Target& Target::operator<<(const LString& dep)
 {
     mDeps.push_back(dep);
     return *this;
+}
+
+
+void Target::Clear()
+{
+    mDeps.clear();
+    mLibrariesDependList.clear();
+    mName = "";
+    mType = Target::Enum::Null;
 }
 
 

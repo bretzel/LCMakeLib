@@ -47,7 +47,7 @@ protected:
 
 public:
     
-    struct Variable{
+    struct Variable final{
         LString       mID;
         LString       mLabel;
         LString::List mValue;
@@ -68,6 +68,7 @@ public:
         Variable& operator << ( const LString& Data);
         Variable& operator << (const LString::List& Data);
         Variable& operator >>(LString& Value);
+        bool      operator !(){ return mValue[0].empty(); }
 
         // -------------- Sous réserve -------------------------
         template<typename T> Variable& operator >> (T& Value){
@@ -93,6 +94,9 @@ public:
     typedef std::map<LString, Variable>       Dictionary;
 
     static List sFiles;
+    static int      PushFile(File* F);
+    static File*    PopFile(const LString aID);
+    static File*    FileInstance(const LString aID);
     Dictionary  mVariables;
     File(){}
     File(const LString aID, const LString& aCMakeTemplateFile, const LString& aCMakeOutputFile);

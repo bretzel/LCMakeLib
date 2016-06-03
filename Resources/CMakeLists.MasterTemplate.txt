@@ -10,11 +10,9 @@ include (SetupEnv.cmake)
 
 set (CMAKE_INSTALL_PREFIX ${HROOT}/%MasterName)
 message("Install Prefix (overwrite):" ${CMAKE_INSTALL_PREFIX})
-include_directories(
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    "<Insert Include Dirs Here>"
-)
+
+
+%IncludeDirs
 
 
 

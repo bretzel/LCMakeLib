@@ -33,7 +33,6 @@ mBasePath(aBasePath)
     /*
      * #   CMakeVersion
      * #   ModulesDependency
-     * #   MasterName
      * #   InstallTargets
      *
      */
@@ -47,19 +46,19 @@ mBasePath(aBasePath)
         {"Alias"             ,{"Alias"             ,"Alias"             , {"Bretzelus-I"}}},
         {"Targets"           ,{"Targets"           ,"Targets List"      , {""}}},
         {"ModulesDependency" ,{"ModulesDependency" ,"Modules Dependency" , {""}}},
-        {"MasterName"        ,{"MasterName"        ,"MasterName"        , {""}}},
-        {"InstallTargets"    ,{"InstallTargets"    ,"InstallTargets"    , {""}}}
+        {"InstallTargets"    ,{"InstallTargets"    ,"InstallTargets"    , {""}}},
+        {"IncludeDirs"       ,{"IncludeDirs"       ,"IncludeDirs"       , {""}}}
     };
 
     mParsers = {
         {"CMakeVersion"       ,&CMakeTemplate::xValue},
         {"ModulesDependency"  ,&CMakeTemplate::xModulesDependency},
-        {"MasterName"         ,&CMakeTemplate::xValue},
         {"InstallTargets"     ,&CMakeTemplate::xInstallTargets},
         {"ProjectName"        ,&CMakeTemplate::xValue},
         {"Author"             ,&CMakeTemplate::xValue},
         {"Email"              ,&CMakeTemplate::xValue},
-        {"Targets"            ,&CMakeTemplate::xTargets}
+        {"Targets"            ,&CMakeTemplate::xTargets},
+        {"IncludeDirs"        ,&CMakeTemplate::xIncludeDirs}
     };
 }
 
@@ -98,10 +97,26 @@ int32_t CMakeTemplate::xModulesDependency(File::Variable& Var)
     mOutFile << "# Modules Dependencies:" << std::endl;
     if(!Var.mValue.empty()){
         for(LString& M : Var.mValue)
-            mOutFile << "find_package(" << M << " REQUIRED)" << std::endl;
+            mOutFile << "FIND_PACKAGE(" << M << " REQUIRED)" << std::endl;
     }
-    return ErrCode::Implement;
+    return ErrCode::Ok;
 }
+
+int32_t CMakeTemplate::xIncludeDirs(File::Variable& Var)
+{
+    if(Var.mValue.size()){
+        mOutFile << "INCLUDE_DIRECTORIES(" << std::endl;
+        mOutFile << "    ${CMAKE_CURRENT_BINARY_DIR}" << std::endl;
+        for(LString aInc : Var.mValue){
+            mOutFile << "    ${" <<  LString("").Arg(aInc) << "}" << std::endl;
+        }
+        mOutFile << ")" << std::endl;
+        mOutFile << "set(CMAKE_INCLUDE_CURRENT_DIR ON)" << std::endl;
+    }
+    return ErrCode::Ok;
+}
+
+
 
 int32_t CMakeTemplate::xValue(File::Variable& Var)
 {
@@ -122,13 +137,38 @@ CMakeTemplate::~CMakeTemplate()
 
 int32_t CMakeTemplate::xTargets(File::Variable& Var)
 {
+    if(!Var.mValue.empty()){
+        for(LString TargetName : Var.mValue){
+            Target& Tg = TargetByID(TargetName);
+            if(!Tg) return ErrCode::ObjectNotFound;
+            if(Tg.Type() != Target::Enum::APP){
+                //library
+                mOutFile << "ADD_LIBRARY(" << std::endl;
+            }
+            else
+                mOutFile << "ADD_EXECUTABLE(" << std::endl << "    " << Tg.Name() << std::endl;
+            if(Tg.Type() != Target::Enum::APP)
+                mOutFile << (Tg.Type() == Target::Enum::DYNAMIC ? "    SHARED" : "    STATIC") << std::endl;
+            mOutFile << "    ${CppSourceCodeHere}" << std::endl
+                     << ")" << std::endl;
 
-    return ErrCode::Implement;
+            // Target_Links:
+            LString::List  L = Tg.Dependencies();
+            mOutFile << "TARGET_LINK_LIBRARIES(" << std::endl << "    " << Tg.Name() << std::endl;
+            for(LString A : L){
+                mOutFile << "    ${" << A << "}" << std::endl;
+            }
+            mOutFile << ")" << std::endl;
+        }
+        return ErrCode::Ok;
+    }
+    return ErrCode::NullValue;
 }
 
 CMakeTemplate& CMakeTemplate::operator<<(const Target& TG)
 {
     mTargets[TG.Name()] = TG;
+
     return *this;
 }
 
@@ -146,12 +186,12 @@ int32_t CMakeTemplate::EndParseVariable(File::Variable& Var)
     return ErrCode::Implement;
 }
 
-Target CMakeTemplate::TargetByID(const LString& aID)
+Target& CMakeTemplate::TargetByID(const LString& aID)
 {
     Target::List::iterator I = mTargets.find(aID);
     if(I != mTargets.end())
         return I->second;
-    return Target();
+    return Target::Null;
 }
 
 void CMakeTemplate::UpdateTargetByID(const LString& aID, const LCMake::Target& Tg)
@@ -162,6 +202,29 @@ void CMakeTemplate::UpdateTargetByID(const LString& aID, const LCMake::Target& T
         T = Tg;
     }
 
+}
+
+
+CMakeTemplate& CMakeTemplate::operator<<(const LString& aIncludeDir)
+{
+    Variable& Var = (*this)["IncludeDirs"];
+
+    for(LString a : Var.mValue){
+        if(a == aIncludeDir)
+            return *this;
+    }
+    Var << aIncludeDir;
+    return *this;
+}
+
+bool CMakeTemplate::RemoveTarget(const LString& aName)
+{
+    Target::List::iterator I = mTargets.find(aName);
+    if(I != mTargets.end()){
+        mTargets.erase(I);
+        return true;
+    }
+    return false;
 }
 
 

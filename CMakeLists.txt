@@ -21,6 +21,7 @@ FILE(GLOB LCMAKE_SRC
     File.c++
     Target.c++
     CMakeTemplate.c++
+    FindCMakeTemplate.c++
 )
 
 FILE(GLOB LCMAKE_HDR

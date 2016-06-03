@@ -31,11 +31,12 @@ struct Target
 {
 
     typedef std::map<LString, Target> List;
-
-    enum Enum {
+    static Target Null;
+    enum class Enum : uint8_t{
         APP,     // RUNTIME
         DYNAMIC, // LIBRARY
-        STATIC   // ARCHIVE
+        STATIC,   // ARCHIVE
+        Null
     }; ///< Types of target.
 
     Target();
@@ -49,13 +50,18 @@ struct Target
     static LString Type(Target::Enum TG);
     Target& operator << (const LString& dep);
     void    SetDepLibsVariablesList(const LString::List& CMakeVariables){ mLibrariesDependList = CMakeVariables; }
+    LString::List CMakeLibDepsVars() { return mLibrariesDependList; }
     LString::List Dependencies() { return mDeps; }
-
+    bool operator !(){ return mType == Enum::Null; }
+    Target::Enum Type(){ return mType; }
+    void SetType(Target::Enum T){ mType = T; }
+    void Clear();
+    void SetID(const LString& aID) { mName = aID; }
 
 private:
     Enum        mType;
     LString     mName;
-    LString::List mDeps;                 ///< Target's specific list of CMake Modules Dependencies.
+    LString::List mDeps;               ///< Target's specific list of CMake Modules Dependencies.
     LString::List mLibrariesDependList;  ///< Part or complete set of the Libraries depends as ` TARGET_LINK_LIBRARIES(this->mName ${CMAKE_%DEPNAME_LIBARIES}) ` from the Master CMakeLists.
 
 };

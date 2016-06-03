@@ -41,6 +41,7 @@ LCMake::File::Variable::Variable(const LString& aID, const LString& aLabel, cons
     mLabel = aLabel;
     mValue.push_back(aValue);
     mValueIterator = mValue.begin();
+
 }
 
 
@@ -61,6 +62,36 @@ LCMake::File::Variable::~Variable()
     mValue.clear();
     mLabel.clear();
 }
+
+
+File* File::PopFile(const LString aID)
+{
+    File::List::iterator I = File::sFiles.find(aID);
+    File* F;
+    if(I != File::sFiles.end()){
+        F = I->second;
+        File::sFiles.erase(I); // Popping ...
+        return F;
+    }
+    return 0;
+}
+
+File* File::FileInstance(const LString aID)
+{
+    File::List::iterator I = File::sFiles.find(aID);
+    if(I != File::sFiles.end())
+        return  I->second;
+    return 0;
+}
+
+int File::PushFile(File* F)
+{
+    File::List::iterator I = File::sFiles.find(F->ID());
+    if(I != File::sFiles.end()) return -1;
+    File::sFiles[F->ID()] = F;
+    return File::sFiles.size();
+}
+
 
 
 File::Variable& File::Variable::operator=(const LString::List& Data)
@@ -141,7 +172,7 @@ mCMakeTemplateFile(aCMakeTemplateFile),
 mCMakeOutputFile(aCMakeFile),
 mID(aID)
 {
-
+    File::PushFile(this);
 }
 
 int32_t File::PushGenerator(const LString& ID, File* pFile)

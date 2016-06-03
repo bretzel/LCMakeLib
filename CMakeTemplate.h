@@ -49,12 +49,15 @@ public:
     int32_t xModulesDependency (File::Variable& Var);    // Specialized Generator
     int32_t xInstallTargets    (File::Variable& Var);    // Specialized Generator
     int32_t xTargets           (File::Variable& Var);    // Specialized Generator
-
+    int32_t xIncludeDirs       (File::Variable& Var);    // Specialized Generator
     CMakeTemplate&  operator << (const Target& TG);
+    CMakeTemplate&  operator << (const LString& aIncludeDir);
 
     virtual int32_t EndParseVariable(Variable& Var);
-    Target::List    Targets(){ return mTargets; } // Deep; recursive copies. Yup...
-    Target          TargetByID(const LString& aID);
+    Target::List&    Targets(){ return mTargets; } // Deep; recursive copies. Yup...
+    Target&          TargetByID(const LString& aID);
+    const LString::List & Includes() { return (*this)["IncludeDirs"].mValue; }
+    bool             RemoveTarget(const LString& aName);
     void            UpdateTargetByID(const LString& aID, const LCMake::Target& Tg);
 
 };
