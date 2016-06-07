@@ -18,7 +18,7 @@
  */
 
 #include "CMakeTemplate.h"
-
+#include <Journal++.h>
 // ----------- TEMPORAIRE -- POUR FIN DE TESTS ET R&DEV!!..:-) -------------------------------------------------------------------------
 #define CMAKE_MASTERTEMPLATE_FILE "../Resources/CMakeLists.MasterTemplate.txt" // As long as the working dir is the Bin subdir
 #define CMAKE_OUTPUT_FILENAME   "CMakeLists.txt"
@@ -165,13 +165,6 @@ int32_t CMakeTemplate::xTargets(File::Variable& Var)
     return ErrCode::NullValue;
 }
 
-CMakeTemplate& CMakeTemplate::operator<<(const Target& TG)
-{
-    mTargets[TG.Name()] = TG;
-
-    return *this;
-}
-
 
 int32_t CMakeTemplate::EndParseVariable(File::Variable& Var)
 {
@@ -184,6 +177,20 @@ int32_t CMakeTemplate::EndParseVariable(File::Variable& Var)
     LexerMsg M = LexerMsg::PushWarning(ErrCode::Implement) + LString(" -- No Generator implemented for variable: `%s`").Arg(Var.mID);
     std::cerr << M.cc() << "\n";
     return ErrCode::Implement;
+}
+
+
+
+CMakeTemplate& CMakeTemplate::operator<<(const Target& TG)
+{
+    Journal JOUT = JFnInfo << cwhite << "Adding Target IDentifed by [" << cyellow <<TG.Name() << cwhite << "]:\n";
+    mTargets[TG.Name()] = TG;
+    for(LString A : TG.CMakeLibDepsVars())
+        JOUT << chblue << A << cwhite <<", ";
+    JOUT << ends;
+    (*this)["Targets"].mValue.push_back(TG.Name());
+    JFnInfo << cwhite << "Target IDentifier also pushed into the Generator Variable...[" << cyellow <<TG.Name() << cwhite << "]:\n";
+    return *this;
 }
 
 Target& CMakeTemplate::TargetByID(const LString& aID)

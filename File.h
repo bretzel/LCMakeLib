@@ -103,6 +103,7 @@ public:
 
     Variable& operator[](const LString& VariableID);
 
+    Dictionary& Variables() { return mVariables; } ///< Yeah, Unprotected, Writable.
     static int32_t PushGenerator(const LString& ID, File* pFile);
     static File* QueryGenerator(const LString& ID);
 

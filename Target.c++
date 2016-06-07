@@ -42,6 +42,7 @@ Target::Target(const Target& tg)
     mName = tg.mName;
     mType = tg.mType;
     mDeps = tg.mDeps;
+    mLibrariesDependList = tg.mLibrariesDependList;
 }
 
 Target::~Target()
@@ -52,6 +53,7 @@ Target::~Target()
 
 Target& Target::operator=(const Target& tg)
 {
+    lfnl << chblue << tg.Name() << creset << "\n";
     mName = tg.mName;
     mType = tg.mType;
     mDeps = tg.mDeps;

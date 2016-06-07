@@ -27,6 +27,7 @@ FILE(GLOB LCMAKE_SRC
 FILE(GLOB LCMAKE_HDR
     Target.h
     CMakeTemplate.h
+    FindCMakeTemplate.h
     File.h
 )
 
