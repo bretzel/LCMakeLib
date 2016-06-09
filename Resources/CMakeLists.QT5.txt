@@ -1,0 +1,48 @@
+cmake_minimum_required(VERSION %CMakeVersion)
+project(%ProjectName)
+
+
+# ----- Mandatory Requirements: ---------
+find_package(Qt5Gui REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+#----------------------------------------
+
+include(%ProjectName.SetupEnv.cmake)
+
+%ModulesDependency
+
+
+#   find_package(Lus REQUIRED)
+#   find_package(LCMakeLib REQUIRED)
+
+
+include_directories(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} )
+ #  ${LUS_INCLUDE_DIR} ${LCMAKELIB_INCLUDE_DIR})
+
+ %IncludeDirs
+
+%Targets
+
+
+%InstallTargets
+
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+
+add_executable(LCMakeGUI.App ${ExecTarget_SRCS})
+target_link_libraries(LCMakeGUI.App
+    Qt5::Gui
+    Qt5::Widgets
+    ${LUS_LIBRARY}
+    ${LCMAKELIB_LIBRARY}
+)
+
+install(TARGETS LCMakeGUI.App RUNTIME DESTINATION LCMakeGUI.App/Bin)
+#install(FILES   ${RSC} DESTINATION  Qt-CMakeGui.App/Resources)
+
+add_subdirectory(Resources)
+
+
