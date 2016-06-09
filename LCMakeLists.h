@@ -25,7 +25,16 @@
 #include <Target.h>
 namespace LCMake {
 
-class CMakeTemplate : public CMakeFile<LCMake::CMakeTemplate>
+
+
+/*!
+    @brief Master CMake Project File. Specialized Class of File <= LCMake;
+
+    @note It's called "CMakeTemplate", but it generates the main CMakeLists.txt.
+    @author Serge Lussier (Bretzelus-I), lussier.serge@gmail.com
+
+ */
+class LCMakeLists : public CMakeFile<LCMake::LCMakeLists>
 {
 
     Target::List    mTargets;
@@ -38,20 +47,20 @@ class CMakeTemplate : public CMakeFile<LCMake::CMakeTemplate>
 
 public:
 
-    CMakeTemplate();
-    CMakeTemplate(const CMakeTemplate& other);
-    CMakeTemplate(const LString& aID, const LString& aBasePath);
-    ~CMakeTemplate();
-    CMakeTemplate& operator=(const CMakeTemplate& other);
-    bool operator==(const CMakeTemplate& other) const;
+    LCMakeLists();
+    LCMakeLists(const LCMakeLists& other);
+    LCMakeLists(const LString& aID, const LString& aBasePath);
+    ~LCMakeLists();
+    LCMakeLists& operator=(const LCMakeLists& other);
+    bool operator==(const LCMakeLists& other) const;
 
     int32_t xValue             (File::Variable& Var);    // Single Value
     int32_t xModulesDependency (File::Variable& Var);    // Specialized Generator
     int32_t xInstallTargets    (File::Variable& Var);    // Specialized Generator
     int32_t xTargets           (File::Variable& Var);    // Specialized Generator
     int32_t xIncludeDirs       (File::Variable& Var);    // Specialized Generator
-    CMakeTemplate&  operator << (const Target& TG);
-    CMakeTemplate&  operator << (const LString& aIncludeDir);
+    LCMakeLists&  operator << (const Target& TG);
+    LCMakeLists&  operator << (const LString& aIncludeDir);
 
     virtual int32_t EndParseVariable(Variable& Var);
     Target::List&    Targets(){ return mTargets; } // Deep; recursive copies. Yup...

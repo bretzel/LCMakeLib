@@ -20,13 +20,13 @@ FILE(GLOB LCMAKE_SRC
 
     File.c++
     Target.c++
-    CMakeTemplate.c++
+    LCMakeLists.c++
     FindCMakeTemplate.c++
 )
 
 FILE(GLOB LCMAKE_HDR
     Target.h
-    CMakeTemplate.h
+    LCMakeLists.h
     FindCMakeTemplate.h
     File.h
 )

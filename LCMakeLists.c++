@@ -17,7 +17,7 @@
  *
  */
 
-#include "CMakeTemplate.h"
+#include "LCMakeLists.h"
 #include <Journal++.h>
 // ----------- TEMPORAIRE -- POUR FIN DE TESTS ET R&DEV!!..:-) -------------------------------------------------------------------------
 #define CMAKE_MASTERTEMPLATE_FILE "../Resources/CMakeLists.MasterTemplate.txt" // As long as the working dir is the Bin subdir
@@ -27,7 +27,7 @@
 
 namespace LCMake {
 
-CMakeTemplate::CMakeTemplate(const LString& aID, const LString& aBasePath): CMakeFile< LCMake::CMakeTemplate >(aID, CMAKE_MASTERTEMPLATE_FILE, aBasePath + '/' + CMAKE_OUTPUT_FILENAME),
+LCMakeLists::LCMakeLists(const LString& aID, const LString& aBasePath): CMakeFile< LCMake::LCMakeLists >(aID, CMAKE_MASTERTEMPLATE_FILE, aBasePath + '/' + CMAKE_OUTPUT_FILENAME),
 mBasePath(aBasePath)
 {
     /*
@@ -51,48 +51,48 @@ mBasePath(aBasePath)
     };
 
     mParsers = {
-        {"CMakeVersion"       ,&CMakeTemplate::xValue},
-        {"ModulesDependency"  ,&CMakeTemplate::xModulesDependency},
-        {"InstallTargets"     ,&CMakeTemplate::xInstallTargets},
-        {"ProjectName"        ,&CMakeTemplate::xValue},
-        {"Author"             ,&CMakeTemplate::xValue},
-        {"Email"              ,&CMakeTemplate::xValue},
-        {"Targets"            ,&CMakeTemplate::xTargets},
-        {"IncludeDirs"        ,&CMakeTemplate::xIncludeDirs}
+        {"CMakeVersion"       ,&LCMakeLists::xValue},
+        {"ModulesDependency"  ,&LCMakeLists::xModulesDependency},
+        {"InstallTargets"     ,&LCMakeLists::xInstallTargets},
+        {"ProjectName"        ,&LCMakeLists::xValue},
+        {"Author"             ,&LCMakeLists::xValue},
+        {"Email"              ,&LCMakeLists::xValue},
+        {"Targets"            ,&LCMakeLists::xTargets},
+        {"IncludeDirs"        ,&LCMakeLists::xIncludeDirs}
     };
 }
 
-CMakeTemplate::CMakeTemplate(const CMakeTemplate& other)
+LCMakeLists::LCMakeLists(const LCMakeLists& other)
 {
 
 }
 
-CMakeTemplate::CMakeTemplate()
+LCMakeLists::LCMakeLists()
 {
 
 }
 
 
-CMakeTemplate& CMakeTemplate::operator=(const CMakeTemplate& other)
+LCMakeLists& LCMakeLists::operator=(const LCMakeLists& other)
 {
     return *this;
 }
 
 
-bool CMakeTemplate::operator==(const CMakeTemplate& other) const
+bool LCMakeLists::operator==(const LCMakeLists& other) const
 {
     return ID() == other.ID();
 }
 
 
-int32_t CMakeTemplate::xInstallTargets(File::Variable& Var)
+int32_t LCMakeLists::xInstallTargets(File::Variable& Var)
 {
     mOutFile << '[' << Var.mID << ": unimplemented]";
     return ErrCode::Implement;
 }
 
 
-int32_t CMakeTemplate::xModulesDependency(File::Variable& Var)
+int32_t LCMakeLists::xModulesDependency(File::Variable& Var)
 {
     mOutFile << "# Modules Dependencies:" << std::endl;
     if(!Var.mValue.empty()){
@@ -102,7 +102,7 @@ int32_t CMakeTemplate::xModulesDependency(File::Variable& Var)
     return ErrCode::Ok;
 }
 
-int32_t CMakeTemplate::xIncludeDirs(File::Variable& Var)
+int32_t LCMakeLists::xIncludeDirs(File::Variable& Var)
 {
     if(Var.mValue.size()){
         mOutFile << "INCLUDE_DIRECTORIES(" << std::endl;
@@ -118,7 +118,7 @@ int32_t CMakeTemplate::xIncludeDirs(File::Variable& Var)
 
 
 
-int32_t CMakeTemplate::xValue(File::Variable& Var)
+int32_t LCMakeLists::xValue(File::Variable& Var)
 {
     lfnl << "Varibale: [" << chgreen << Var.mID << creset << Var.mValue.front() << ": \n" ;
     LString::List& L = Var.mValue;
@@ -129,13 +129,13 @@ int32_t CMakeTemplate::xValue(File::Variable& Var)
     return ErrCode::NullValue;
 }
 
-CMakeTemplate::~CMakeTemplate()
+LCMakeLists::~LCMakeLists()
 {
     
     mParsers.clear();
 }
 
-int32_t CMakeTemplate::xTargets(File::Variable& Var)
+int32_t LCMakeLists::xTargets(File::Variable& Var)
 {
     if(!Var.mValue.empty()){
         for(LString TargetName : Var.mValue){
@@ -166,7 +166,7 @@ int32_t CMakeTemplate::xTargets(File::Variable& Var)
 }
 
 
-int32_t CMakeTemplate::EndParseVariable(File::Variable& Var)
+int32_t LCMakeLists::EndParseVariable(File::Variable& Var)
 {
     GeneratorFN G = (*this)(Var.mID);
     lfnl << ":\n";
@@ -181,7 +181,7 @@ int32_t CMakeTemplate::EndParseVariable(File::Variable& Var)
 
 
 
-CMakeTemplate& CMakeTemplate::operator<<(const Target& TG)
+LCMakeLists& LCMakeLists::operator<<(const Target& TG)
 {
     Journal JOUT = JFnInfo << cwhite << "Adding Target IDentifed by [" << cyellow <<TG.Name() << cwhite << "]:\n";
     mTargets[TG.Name()] = TG;
@@ -193,7 +193,7 @@ CMakeTemplate& CMakeTemplate::operator<<(const Target& TG)
     return *this;
 }
 
-Target& CMakeTemplate::TargetByID(const LString& aID)
+Target& LCMakeLists::TargetByID(const LString& aID)
 {
     Target::List::iterator I = mTargets.find(aID);
     if(I != mTargets.end())
@@ -201,7 +201,7 @@ Target& CMakeTemplate::TargetByID(const LString& aID)
     return Target::Null;
 }
 
-void CMakeTemplate::UpdateTargetByID(const LString& aID, const LCMake::Target& Tg)
+void LCMakeLists::UpdateTargetByID(const LString& aID, const LCMake::Target& Tg)
 {
     Target::List::iterator I = mTargets.find(aID);
     if(I != mTargets.end()){
@@ -212,7 +212,7 @@ void CMakeTemplate::UpdateTargetByID(const LString& aID, const LCMake::Target& T
 }
 
 
-CMakeTemplate& CMakeTemplate::operator<<(const LString& aIncludeDir)
+LCMakeLists& LCMakeLists::operator<<(const LString& aIncludeDir)
 {
     Variable& Var = (*this)["IncludeDirs"];
 
@@ -224,7 +224,7 @@ CMakeTemplate& CMakeTemplate::operator<<(const LString& aIncludeDir)
     return *this;
 }
 
-bool CMakeTemplate::RemoveTarget(const LString& aName)
+bool LCMakeLists::RemoveTarget(const LString& aName)
 {
     Target::List::iterator I = mTargets.find(aName);
     if(I != mTargets.end()){
