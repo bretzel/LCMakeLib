@@ -137,32 +137,32 @@ LCMakeLists::~LCMakeLists()
 
 int32_t LCMakeLists::xTargets(File::Variable& Var)
 {
-    if(!Var.mValue.empty()){
-        for(LString TargetName : Var.mValue){
-            Target& Tg = TargetByID(TargetName);
-            if(!Tg) return ErrCode::ObjectNotFound;
-            if(Tg.Type() != Target::Enum::APP){
-                //library
-                mOutFile << "ADD_LIBRARY(" << std::endl;
-            }
-            else
-                mOutFile << "ADD_EXECUTABLE(" << std::endl << "    " << Tg.Name() << std::endl;
-            if(Tg.Type() != Target::Enum::APP)
-                mOutFile << (Tg.Type() == Target::Enum::DYNAMIC ? "    SHARED" : "    STATIC") << std::endl;
-            mOutFile << "    ${CppSourceCodeHere}" << std::endl
-                     << ")" << std::endl;
+    if(Var.mValue.empty())
+        return ErrCode::NullValue;
 
-            // Target_Links:
-            LString::List  L = Tg.Dependencies();
-            mOutFile << "TARGET_LINK_LIBRARIES(" << std::endl << "    " << Tg.Name() << std::endl;
-            for(LString A : L){
-                mOutFile << "    ${" << A << "}" << std::endl;
-            }
-            mOutFile << ")" << std::endl;
+    for(LString TargetName : Var.mValue){
+        Target& Tg = TargetByID(TargetName);
+        if(!Tg) return ErrCode::ObjectNotFound;
+        if(Tg.Type() != Target::Enum::APP){
+            //library
+            mOutFile << "ADD_LIBRARY(" << std::endl;
         }
-        return ErrCode::Ok;
+        else
+            mOutFile << "ADD_EXECUTABLE(" << std::endl << "    " << Tg.Name() << std::endl;
+        if(Tg.Type() != Target::Enum::APP)
+            mOutFile << (Tg.Type() == Target::Enum::DYNAMIC ? "    SHARED" : "    STATIC") << std::endl;
+        mOutFile << "    ${CppSourceCodeHere}" << std::endl
+                    << ")" << std::endl;
+
+        // Target_Links:
+        LString::List  L = Tg.Dependencies();
+        mOutFile << "TARGET_LINK_LIBRARIES(" << std::endl << "    " << Tg.Name() << std::endl;
+        for(LString A : L){
+            mOutFile << "    ${" << A << "}" << std::endl;
+        }
+        mOutFile << ")" << std::endl;
     }
-    return ErrCode::NullValue;
+    return ErrCode::Ok;
 }
 
 

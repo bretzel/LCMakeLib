@@ -21,6 +21,7 @@ FILE(GLOB LCMAKE_SRC
     File.c++
     Target.c++
     LCMakeLists.c++
+    Feature.c++
     FindCMakeTemplate.c++
 )
 
@@ -29,6 +30,7 @@ FILE(GLOB LCMAKE_HDR
     LCMakeLists.h
     FindCMakeTemplate.h
     File.h
+    Feature.h
 )
 
 FILE(GLOB LCMAKE_RESOURCES Resources/*)

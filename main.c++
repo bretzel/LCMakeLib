@@ -2,7 +2,7 @@
 
 #include <Journal++.h>
 #include <unistd.h>
-#include <CMakeTemplate.h>
+#include <LCMakeLists.h>
 
 using namespace LCMake;
 

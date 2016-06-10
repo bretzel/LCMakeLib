@@ -18,7 +18,7 @@
  */
 
 #include "FindCMakeTemplate.h"
-#include "CMakeTemplate.h"
+#include "LCMakeLists.h"
 namespace LCMake {
 
 FindCMakeTemplate::FindCMakeTemplate(const FindCMakeTemplate& other)
