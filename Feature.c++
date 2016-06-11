@@ -43,6 +43,10 @@ const LString::List& Feature::ListCMakeCustomModules()
 const LString::List& Feature::ListCMakeSystemModules()
 {
     //...
+    mDir.Open("/usr/share");
+    LString::List L;
+    int n = mDir.ListFiltered(L, {"cmake-"});
+    
     return Feature::mCMakeCustomModules;
 }
 
