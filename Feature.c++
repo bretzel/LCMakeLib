@@ -22,6 +22,7 @@
 #include "LCMakeLists.h"
 #include "Target.h"
 #include <stdlib.h>
+#include <Journal>
 
 namespace LCMake {
 
@@ -45,8 +46,31 @@ const LString::List& Feature::ListCMakeSystemModules()
     //...
     mDir.Open("/usr/share");
     LString::List L;
-    int n = mDir.ListFiltered(L, {"cmake-"});
-    
+    int n = mDir.ListFiltered(L, {"cmake-","",""});
+    LString ModDir;
+    if(n != 1){
+        mDir.Close();
+        throw LexerMsg::PushError(ErrCode::Required) + LString(" one element, got %d").Arg(n);
+    }
+
+    ModDir = LString("/usr/share/%s/Modules").Arg(L.front());
+    JFnInfo << cwhite << "Found:" << cyellow << L.front() << ends;
+    JFnInfo << cwhite << "CMake System Modules Subdirectory:" << cyellow << ModDir << ends;
+    mDir.Close();
+    L.clear();
+    if(mDir.Open(ModDir)){
+        n = mDir.ListFiltered(L, {"Find","", ".cmake"});
+        if(n > 0){
+            for(LString A : L){
+                JCNote << cyellow << A << creset << ends;
+            }
+        }
+        else {
+            JCNote << cyellow << "No Find*.cmake" << creset << ends;
+        }
+    }
+    // Assume for now..,... Disons que
+    mDir.Close();
     return Feature::mCMakeCustomModules;
 }
 
