@@ -3,7 +3,7 @@
 #include <Journal++.h>
 #include <unistd.h>
 #include <LCMakeLists.h>
-#include <Feature.h>
+//#include <Feature.h>
 
 using namespace LCMake;
 
@@ -38,7 +38,7 @@ int main (int argc, char **argv)
 
 
         JFnNote << "Testing LCMake::Feature:" << ends;
-        LString::List L = LCMake::Feature::ListCMakeSystemModules();
+        LString::List L = LCMake::File::ListCMakeSystemModules();
         
 
         LexerMsg E;

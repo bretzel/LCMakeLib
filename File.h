@@ -22,7 +22,7 @@
 
 #include <LString++.h>
 #include <LexMessage.h>
-
+#include <LDirInfo>
 
 #include <utility>
 #include <map>
@@ -97,6 +97,17 @@ public:
     static int      PushFile(File* F);
     static File*    PopFile(const LString aID);
     static File*    FileInstance(const LString aID);
+
+    static const LString::List& ListCMakeSystemModules();
+    static const LString::List& ListCMakeCustomModules();
+    static LString& ProjectBasePath() { return File::mProjectBasePath; }
+    static LString& DefaultProjectBasePath(){
+        File::mProjectBasePath = LString("%s/Applications").Arg(getenv("HOME"));
+        return File::mProjectBasePath;
+    }
+    static LString& ProjectName() { return mProjectName; }
+
+
     Dictionary  mVariables;
     File(){}
     File(const LString aID, const LString& aCMakeTemplateFile, const LString& aCMakeOutputFile);
@@ -121,6 +132,14 @@ public:
 
     int32_t BeginParseVariable();
     virtual int32_t EndParseVariable(File::Variable& Var) = 0;
+
+private:
+    static LDirInfo mDir;                       ///< Directory scannings
+    static LString::List mCMakeSysModules;      ///< Find cmake modules from the system-wide (/usr/share/cmake-?/Modules).
+    static LString::List mCMakeCustomModules;   ///< Custom find cmake modules ( $HOME/Applications/CMakeModules )
+    static LString  mProjectBasePath;           ///< ... Global Project's base path ... ( default: $HOME/Applications; @see DefaultProjectBasePath)
+    static File::List mFiles;                   ///< Involved CMake specialized Generators.
+    static LString  mProjectName;               ///< The name of the project is stored here.
 };
 
 
