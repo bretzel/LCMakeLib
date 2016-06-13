@@ -151,7 +151,7 @@ int32_t LCMakeLists::xTargets(File::Variable& Var)
             mOutFile << "ADD_EXECUTABLE(" << std::endl << "    " << Tg.Name() << std::endl;
         if(Tg.Type() != Target::Enum::APP)
             mOutFile << (Tg.Type() == Target::Enum::DYNAMIC ? "    SHARED" : "    STATIC") << std::endl;
-        mOutFile << "    ${CppSourceCodeHere}" << std::endl
+        mOutFile << "    ${CppSourceFilesHere}" << std::endl
                     << ")" << std::endl;
 
         // Target_Links:

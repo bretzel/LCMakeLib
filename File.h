@@ -93,7 +93,7 @@ public:
     typedef std::map<LString, File*>          List;
     typedef std::map<LString, Variable>       Dictionary;
 
-    static List sFiles;
+    static List     sFiles;
     static int      PushFile(File* F);
     static File*    PopFile(const LString aID);
     static File*    FileInstance(const LString aID);
@@ -135,6 +135,7 @@ public:
 
 private:
     static LDirInfo mDir;                       ///< Directory scannings
+    static LString  mHROOT;                     ///< Defaults to $HOME/Applications
     static LString::List mCMakeSysModules;      ///< Find cmake modules from the system-wide (/usr/share/cmake-?/Modules).
     static LString::List mCMakeCustomModules;   ///< Custom find cmake modules ( $HOME/Applications/CMakeModules )
     static LString  mProjectBasePath;           ///< ... Global Project's base path ... ( default: $HOME/Applications; @see DefaultProjectBasePath)

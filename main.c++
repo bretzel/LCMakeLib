@@ -39,7 +39,7 @@ int main (int argc, char **argv)
 
         JFnNote << "Testing LCMake::Feature:" << ends;
         LString::List L = LCMake::File::ListCMakeSystemModules();
-        
+        L  = LCMake::File::ListCMakeCustomModules();
 
         LexerMsg E;
         while(LexerMsg::Pop(E)) std::cerr << E.cc() << "\n";

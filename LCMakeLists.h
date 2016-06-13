@@ -30,7 +30,7 @@ namespace LCMake {
 /*!
     @brief Main CMake Project File. Specialized Class of File <= LCMake;
 
-    @note It's called "CMakeTemplate", but it generates the main CMakeLists.txt.
+    @note It's called "CMakeLists", but it generates the main CMakeLists.txt.
     @author Serge Lussier (Bretzelus-I), lussier.serge@gmail.com
 
  */

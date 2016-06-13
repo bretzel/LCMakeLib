@@ -36,6 +36,7 @@ LDirInfo       File::mDir;
 LString::List  File::mCMakeSysModules;
 LString::List  File::mCMakeCustomModules;
 LString        File::mProjectBasePath;
+LString        File::mHROOT = "%s/Applications";
 File::List     File::mFiles;
 
 
@@ -307,6 +308,8 @@ int32_t File::OpenOutput()
     return ErrCode::Ok;
 }
 
+
+// NOT VIRTUAL. 
 int32_t File::Generate()
 {
     lfnl << ":\n";
@@ -336,15 +339,37 @@ int32_t File::Generate()
 
 
 
-
+//STATIC
 const LString::List& File::ListCMakeCustomModules()
 {
-    return {""};
+
+    File::mHROOT.Arg(getenv("HOME"));
+    JFnDebug << cwhite << "Path to Custom Modules: [" << cyellow << File::mHROOT << cwhite << "]" << ends;
+    LString::List L;
+
+    LString ModDir = File::mHROOT + "/" + "CMakeModules";
+    if(mDir.Open(ModDir)){
+        JFnInfo << cwhite << "CMake Custom Modules Subdirectory:" << cyellow <<   ends;
+        int n = mDir.ListFiltered(L, {"Find","", ".cmake"});
+        if(n > 0){
+            for(LString A : L){
+                JCDebug << cyellow << A << creset << ends;
+                File::mCMakeCustomModules.push_back(A);
+            }
+        }
+        else
+            JCNote << cyellow << "No Find*.cmake" << creset << ends;
+    }
+    // Assume for now..,... Disons que
+    mDir.Close();
+    return File::mCMakeCustomModules;
 }
 
+
+//STATIC
 const LString::List& File::ListCMakeSystemModules()
 {
-    mDir.Open("/usr/share");
+    mDir.Open("/usr/share"); // Yeah, works only in Linux ENV. Just for testing... .
     LString::List L;
     int n = mDir.ListFiltered(L, {"cmake-","",""});
     LString ModDir;
@@ -363,6 +388,7 @@ const LString::List& File::ListCMakeSystemModules()
         if(n > 0){
             for(LString A : L){
                 JCNote << cyellow << A << creset << ends;
+                File::mCMakeSysModules.push_back(A);
             }
         }
         else {
@@ -371,7 +397,7 @@ const LString::List& File::ListCMakeSystemModules()
     }
     // Assume for now..,... Disons que
     mDir.Close();
-    return File::mCMakeCustomModules;
+    return File::mCMakeSysModules;
 }
 
 
