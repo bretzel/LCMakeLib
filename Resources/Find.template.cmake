@@ -12,7 +12,7 @@
 
 
 #Name = Targetname = Templates  
-#NAME ( TargetName converted in UPCASE )
+#NAME ( TargetName converted in UPPPER CASE )
 
 if(%'NAME'_INCLUDE_DIR AND %'NAME'_LIBRARY)
      set(%'NAME'_Found TRUE)

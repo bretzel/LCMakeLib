@@ -401,6 +401,20 @@ const LString::List& File::ListCMakeSystemModules()
 }
 
 
+/*!
+    @brief Simply removes "Find" and ".cmake" parts from the filename
+ */
+LString File::ExtractModuleName(const LString& aModname)
+{
+    LString CMakeModule = aModname;
+    std::string ModName = CMakeModule;
+    int N = (int)ModName.find("Find",0) + std::string("Find").length();
+    // Nom du module.
+    int E = (int)ModName.find('.', (std::size_t)N);
+    std::string ModNameD = ModName.substr(N, E - std::string("Find").length());
+
+    return ModNameD;
+}
 
 
 

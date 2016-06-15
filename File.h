@@ -97,7 +97,7 @@ public:
     static int      PushFile(File* F);
     static File*    PopFile(const LString aID);
     static File*    FileInstance(const LString aID);
-
+    static LString  ExtractModuleName(const LString& aModname);
     static const LString::List& ListCMakeSystemModules();
     static const LString::List& ListCMakeCustomModules();
     static LString& ProjectBasePath() { return File::mProjectBasePath; }
