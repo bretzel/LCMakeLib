@@ -1,6 +1,6 @@
 /*
  * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2016  <copyright holder> <email>
+ * Copyright (C) 2016  Serge LUssier (Bretzelus), lussier.serge@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,11 @@
 
 namespace LCMake {
 
-struct Target
+
+/*!
+    @brief Holds target informations. ... duh...:)
+ */
+struct Target final
 {
 
     typedef std::map<LString, Target> List;
@@ -55,14 +59,18 @@ struct Target
     bool operator !(){ return mType == Enum::Null; }
     Target::Enum Type(){ return mType; }
     void SetType(Target::Enum T){ mType = T; }
-    void Clear();
+    bool Clear();
     void SetID(const LString& aID) { mName = aID; }
+    bool& Dirty() {
+        return mDirty;
+    }
 
 private:
     Enum        mType;
+    bool        mDirty = true;
     LString     mName;
-    LString::List mDeps;               ///< Target's specific list of CMake Modules Dependencies.
-    mutable LString::List mLibrariesDependList;  ///< Part or complete set of the Libraries depends as ` TARGET_LINK_LIBRARIES(this->mName ${CMAKE_%DEPNAME_LIBARIES}) ` from the Master CMakeLists.
+    LString::List mDeps;               ///< Target's specific list of CMake Modules Dependencies ( 'Find'[ModuleName]'.cmake' ).
+    mutable LString::List mLibrariesDependList;  ///< Part or complete set of the Libraries dependencies as ` TARGET_LINK_LIBRARIES(this->mName ${CMAKE_%DEPNAME_[LIBARIES/LIBRARY]}) ` from the Master CMakeLists.
 
 };
 

@@ -14,7 +14,7 @@ message("Install Prefix (overwrite):" ${CMAKE_INSTALL_PREFIX})
 
 %IncludeDirs
 
-%Targets
+%Targets  
 
 %InstallTargets
 

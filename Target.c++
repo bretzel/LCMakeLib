@@ -57,14 +57,13 @@ Target& Target::operator=(const Target& tg)
     mName = tg.mName;
     mType = tg.mType;
     mDeps = tg.mDeps;
-    mLibrariesDependList = tg.mLibrariesDependList;
+    mLibrariesDependList = tg.mLibrariesDependList; // Deep copy.
     return *this;
 }
 
 bool Target::operator==(const Target& other) const
 {
     return (mName == other.mName) && (mType == other.mType);
-
 }
 
 
@@ -79,6 +78,10 @@ LString Target::Type(Target::Enum TG)
     return Tp[TG];
 }
 
+
+/*!
+    @brief Appends Module Name's variable ( ID part of the CMAKE Variables ) into the list of dependencies.
+ */
 Target& Target::operator<<(const LString& dep)
 {
     mDeps.push_back(dep);
@@ -86,12 +89,20 @@ Target& Target::operator<<(const LString& dep)
 }
 
 
-void Target::Clear()
+/*!
+    @brief Clears the target data so the instance can be compared as NULL target against other instances.
+ */
+bool Target::Clear()
 {
+    if(mDirty){
+        ///@todo Signal a warning before rejecting this clear request.
+        return false;
+    }
     mDeps.clear();
     mLibrariesDependList.clear();
     mName = "";
     mType = Target::Enum::Null;
+    return true;
 }
 
 

@@ -73,7 +73,7 @@ public:
         // -------------- Sous réserve -------------------------
         template<typename T> Variable& operator >> (T& Value){
             LString V;
-            (*this) >> V;
+            (*this) >> V; // 'THE FUCK ?!
             if(V.empty()) return *this;
             V >> Value;  // std:ostrstream magic....
             return *this;

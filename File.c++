@@ -96,7 +96,9 @@ File* File::FileInstance(const LString aID)
 int File::PushFile(File* F)
 {
     File::List::iterator I = File::sFiles.find(F->ID());
-    if(I != File::sFiles.end()) return -1;
+    if(I != File::sFiles.end())
+        return ErrCode::Exists;
+
     File::sFiles[F->ID()] = F;
     return File::sFiles.size();
 }
@@ -115,14 +117,14 @@ File::Variable& File::Variable::operator=(const LString& Data)
 {
     mValue.clear();
     mValue.push_back(Data);
-    mValueIterator = mValue.begin();
+    mValueIterator = --mValue.end();
     return *this;
 }
 
 File::Variable& File::Variable::operator<<(const LString::List& Data)
 {
     for(auto L : Data) mValue.push_back(L);
-    mValueIterator = --mValue.end();
+    mValueIterator = mValue.begin();
     return *this;
 }
 
@@ -230,7 +232,7 @@ int32_t File::BeginParseVariable()
     bool rdelim = false;
     bool prot =false;
     mInFile.get(C);
-    if(C == '`'){
+    if(C == '\''){
         mInFile.get(C);
         rdelim = false;
         prot = true;
@@ -239,7 +241,7 @@ int32_t File::BeginParseVariable()
 
         VarName << C;
         mInFile.get(C);
-        if(C == '`'){
+        if(C == '\''){
             if(!prot)
                 throw LexerMsg::PushError(ErrCode::Invalid) + "Malformed variable name substitution";
             //mInFile.get(C);
@@ -267,7 +269,7 @@ int32_t File::BeginParseVariable()
         }
         Var = (*F)[VarName];
         if(Var.mValue.empty())
-            throw LexerMsg::PushError(ErrCode::ObjectNotFound) + LString("%s").Arg(VarName);
+            throw LexerMsg::PushError(ErrCode::Empty) + LString("%s").Arg(VarName);
     }
     EndParseVariable(Var); // Variable contents to be expanded out to the output file, which is directly accessible from the derived specialized Generators
     mOutFile << C;

@@ -20,7 +20,7 @@
 #include "LCMakeLists.h"
 #include <Journal++.h>
 // ----------- TEMPORAIRE -- POUR FIN DE TESTS ET R&DEV!!..:-) -------------------------------------------------------------------------
-#define CMAKE_MASTERTEMPLATE_FILE "../Resources/CMakeLists.MasterTemplate.txt" // As long as the working dir is the Bin subdir
+#define CMAKE_MASTERTEMPLATE_FILE "../Resources/CMakeLists.MasterTemplate.txt" // This is valid as long as the working dir is the Bin subdir
 #define CMAKE_OUTPUT_FILENAME   "CMakeLists.txt"
 // --------------------------------------------------------------------------------------------------------------------------------
 
@@ -94,7 +94,7 @@ int32_t LCMakeLists::xInstallTargets(File::Variable& Var)
 
 int32_t LCMakeLists::xModulesDependency(File::Variable& Var)
 {
-    mOutFile << "# Modules Dependencies:" << std::endl;
+    mOutFile << LString("# [%s]  Modules Dependencies:").Arg(Var.mID).c_str() << std::endl;
     if(!Var.mValue.empty()){
         for(LString& M : Var.mValue)
             mOutFile << "FIND_PACKAGE(" << M << " REQUIRED)" << std::endl;
@@ -105,10 +105,10 @@ int32_t LCMakeLists::xModulesDependency(File::Variable& Var)
 int32_t LCMakeLists::xIncludeDirs(File::Variable& Var)
 {
     if(Var.mValue.size()){
-        mOutFile << "INCLUDE_DIRECTORIES(" << std::endl;
+        mOutFile << std::endl << "INCLUDE_DIRECTORIES(" << std::endl;
         mOutFile << "    ${CMAKE_CURRENT_BINARY_DIR}" << std::endl;
         for(LString aInc : Var.mValue){
-            mOutFile << "    ${" <<  LString("").Arg(aInc) << "}" << std::endl;
+            mOutFile << "    ${" <<  aInc << "}" << std::endl;
         }
         mOutFile << ")" << std::endl;
         mOutFile << "set(CMAKE_INCLUDE_CURRENT_DIR ON)" << std::endl;
@@ -135,14 +135,11 @@ LCMakeLists::~LCMakeLists()
     mParsers.clear();
 }
 
-int32_t LCMakeLists::xTargets(File::Variable& Var)
+int32_t LCMakeLists::xTargets(File::Variable&)
 {
-    if(Var.mValue.empty())
-        return ErrCode::NullValue;
-
-    for(LString TargetName : Var.mValue){
-        Target& Tg = TargetByID(TargetName);
-        if(!Tg) return ErrCode::ObjectNotFound;
+    // Variable has no use here. ( see %Targets into the CMake file template )
+    for(auto Tgi : mTargets){
+        Target& Tg = Tgi.second; 
         if(Tg.Type() != Target::Enum::APP){
             //library
             mOutFile << "ADD_LIBRARY(" << std::endl;
@@ -151,8 +148,7 @@ int32_t LCMakeLists::xTargets(File::Variable& Var)
             mOutFile << "ADD_EXECUTABLE(" << std::endl << "    " << Tg.Name() << std::endl;
         if(Tg.Type() != Target::Enum::APP)
             mOutFile << (Tg.Type() == Target::Enum::DYNAMIC ? "    SHARED" : "    STATIC") << std::endl;
-        mOutFile << "    ${CppSourceFilesHere}" << std::endl
-                    << ")" << std::endl;
+        mOutFile << "    ${CppSourceFilesHere}" << std::endl << ")" << std::endl;
 
         // Target_Links:
         LString::List  L = Tg.Dependencies();
@@ -188,7 +184,8 @@ LCMakeLists& LCMakeLists::operator<<(const Target& TG)
     for(LString A : TG.CMakeLibDepsVars())
         JOUT << chblue << A << cwhite <<", ";
     JOUT << ends;
-    (*this)["Targets"].mValue.push_back(TG.Name());
+    /// @Note Remove useless copies of the target name.
+    (*this)["Targets"].mValue.push_back(TG.Name()); // Irrelevent. No need to keep a distinct copy of the target name....
     JFnInfo << cwhite << "Target IDentifier also pushed into the Generator Variable...[" << cyellow <<TG.Name() << cwhite << "]:\n";
     return *this;
 }
@@ -208,7 +205,6 @@ void LCMakeLists::UpdateTargetByID(const LString& aID, const LCMake::Target& Tg)
         Target& T = I->second;
         T = Tg;
     }
-
 }
 
 

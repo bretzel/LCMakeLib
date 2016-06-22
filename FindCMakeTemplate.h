@@ -37,6 +37,8 @@ public:
     virtual ~FindCMakeTemplate();
 
     int32_t xValue(File::Variable& Var);
+    int32_t xVarName(File::Variable& Var);
+    
     virtual int32_t EndParseVariable(LCMake::File::Variable& Var);
 };
 }

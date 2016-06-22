@@ -53,19 +53,37 @@ FindCMakeTemplate::FindCMakeTemplate(const LString aID, const LString& aCMakeTem
 // Name
 //
     mVariables = {
-        {"Name", {"Name", "Module Name", {""}}}
+        {"Name", {"Name", "Module Name", {""}}},
+        {"NAME", {"NAME", "Variable Name",{""}}}
     };
 
     mParsers = {
-        {"Name", &FindCMakeTemplate::xValue}
+        {"Name", &FindCMakeTemplate::xValue},
+        {"NAME", &FindCMakeTemplate::xVarName}
     };
 
 }
 
+
+/*!
+    @brief Generate the CMake variable with the 'Name' in UPPERCASE.
+ */
+int32_t FindCMakeTemplate::xVarName(File::Variable& Var)
+{
+    LString Val = Var.mValue[0];
+    if(!Val.size())
+        return ErrCode::Empty;
+
+    mOutFile << LString::Upcase(Val);
+    return ErrCode::Ok;
+}
+
+
+
 int32_t FindCMakeTemplate::xValue(File::Variable& Var)
 {
     mOutFile << Var.mValue[0];
-    return ErrCode::Implement;
+    return ErrCode::Ok;
 }
 
 int32_t FindCMakeTemplate::EndParseVariable(LCMake::File::Variable& Var)
